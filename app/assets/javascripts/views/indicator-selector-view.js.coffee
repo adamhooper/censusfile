@@ -2,6 +2,8 @@
 #= require globals
 #= require state
 
+$ = jQuery
+
 globals = window.OpenCensus.globals
 state = window.OpenCensus.state
 

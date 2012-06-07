@@ -48,6 +48,14 @@ body {
     margin: 0;
     padding: 0;
 
+    label {
+      text-transform: uppercase;
+    }
+
+    p.startup-content {
+      display: none;
+    }
+
     p {
       position: relative;
       margin: 0;
@@ -70,7 +78,7 @@ body {
       margin: 2px;
       line-height: 1.6;
       background: $color_strong_background;
-      color: $color_strong;
+      color: $color_main;
       font-size: 1em;
     }
 
@@ -95,6 +103,36 @@ body {
 
     div.error {
       color: $color_error;
+    }
+  }
+
+  form.startup {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    padding: 3em 7em;
+    background: $color_alt_background;
+    background: rgba($color_alt_background, 0.85);
+
+    p.startup-content {
+      display: block;
+      text-align: center;
+
+      a {
+        font-weight: normal;
+        text-decoration: none;
+        font-size: .7em;
+      }
+    }
+
+    p {
+      margin: 0;
+      padding: 1em;
+      background: $color_alt_background;
+      background: rgba($color_alt_background, 0.85);
     }
   }
 
@@ -174,9 +212,9 @@ body {
       .compare-prompt {
         position: absolute;
         height: $width_compare_prompt;
-        top: 80px;
-        width: 100px;
-        left: -(100px + $width_compare_prompt) / 2;
+        top: (200px - $width_compare_prompt) / 2;
+        width: 200px;
+        left: -(200px + $width_compare_prompt) / 2;
         overflow: hidden;
 
         -webkit-transform: rotate(-90deg); 
@@ -195,6 +233,11 @@ body {
           text-decoration: none;
           font-weight: normal;
           font-size: .8em;
+          text-transform: uppercase;
+
+          span {
+            color: yellow;
+          }
         }
       }
 
@@ -251,6 +294,11 @@ body {
           color: $color_faded;
           line-height: 21px;
 
+          a {
+            font-weight: normal;
+            text-decoration: none;
+          }
+
           img {
             display: inline-block;
             vertical-align: middle;
@@ -262,7 +310,7 @@ body {
         text-align: left;
         font-size: .7em;
         border-top: 1px solid $color_border_visible;
-        padding: 6px 9px 0;
+        padding: 5px 9px 0;
         line-height: 1.4;
       }
 
@@ -272,15 +320,15 @@ body {
 
       td.region, td.compare-region {
         width: $width_region_info - 18px;
-        padding: 0 9px 6px;
+        padding: 0 9px 5px;
         line-height: 31px;
 
         div.age-chart {
           line-height: 1.8;
-          height: 250px;
+          height: 230px;
 
           .jqplot-xaxis {
-            height: 18px;
+            height: 16px;
           }
         }
       }
@@ -360,7 +408,7 @@ body {
         }
       }
 
-      tbody.links {
+      tbody.links td {
         height: $height_map;
         vertical-align: top;
 

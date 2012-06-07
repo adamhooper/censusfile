@@ -1,5 +1,7 @@
 #= require app
 
+$ = jQuery
+
 class LocationView
   constructor: (@form) ->
     $(@form).on "submit", (e) ->

@@ -1,6 +1,8 @@
 #= requie app
 #= require models/indicator
 
+$ = jQuery
+
 Indicator = window.OpenCensus.models.Indicator
 
 class IndicatorDb

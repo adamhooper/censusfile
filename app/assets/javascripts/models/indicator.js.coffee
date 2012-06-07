@@ -1,5 +1,7 @@
 #= require app
 
+$ = jQuery
+
 class Indicator
   constructor: (attributes) ->
     @key = attributes.key

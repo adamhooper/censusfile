@@ -1,5 +1,7 @@
 #= require app
 
+$ = jQuery
+
 window.OpenCensus.helpers.format_float = (n, decimals = 2) ->
   s = n.toFixed(decimals)
   if decimals > 3

@@ -1,4 +1,3 @@
-#= require jquery
 #= require json2
 
 #= require app
@@ -7,6 +6,8 @@
 #= require models/region
 #= require paper
 #= require parse_opencensus_geojson
+
+$ = jQuery
 
 globals = window.OpenCensus.globals
 region_types = globals.region_types
@@ -177,6 +178,8 @@ class MapTile
 
     data = parse_opencensus_geojson(data)
 
+    return if !data?
+
     for feature in data.features
       properties = feature.properties
       region = new Region(feature.id, properties.name, properties.parents, properties.statistics)
@@ -204,8 +207,18 @@ class MapTile
     return if !region_list?
 
     current_region_list = state["region_list#{n}"]
-    if region_list.length > (current_region_list?.length || 0)
+    if region_list.length > (current_region_list?.length || 0) || region_list[0]?.id != current_region_list[0]?.id
       state["setRegionList#{n}"](region_list)
+
+      # If it isn't a sub-region, set the region too
+      current_region_id = state["region#{n}"]?.id
+      found = false
+      for region in region_list
+        if region.id == current_region_id
+          found = true
+          break
+      if !found
+        state["setRegion#{n}"](region_list[0])
 
   maybeUpdateRegionLists: () ->
     this._maybeUpdateRegionListN(1)

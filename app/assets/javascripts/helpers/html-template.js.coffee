@@ -1,5 +1,7 @@
 #= require app
 
+$ = jQuery
+
 class HtmlTemplate
   constructor: (@html) ->
 

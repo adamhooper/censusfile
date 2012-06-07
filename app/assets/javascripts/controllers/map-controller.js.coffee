@@ -1,6 +1,9 @@
 #= require app
 #= require state
 #= require views/map-view
+#= require controllers/zoom-controller
+
+$ = jQuery
 
 state = window.OpenCensus.state
 MapView = window.OpenCensus.views.MapView
@@ -41,6 +44,8 @@ map_controller = (map_view) ->
   map_view.onMapEvent 'bounds_changed', () ->
     map_bounds = map_view.map.getBounds()
     state.map_bounds = map_bounds
+
+  window.OpenCensus.controllers.zoom_controller(map_view)
 
 $ ->
   $div = $('#opencensus-wrapper div.map')

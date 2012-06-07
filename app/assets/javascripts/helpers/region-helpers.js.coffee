@@ -1,6 +1,8 @@
 #= require app
 #= require globals
 
+$ = jQuery
+
 globals = window.OpenCensus.globals
 
 window.OpenCensus.helpers.region_to_human_html = (region) ->

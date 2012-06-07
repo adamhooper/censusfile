@@ -1,6 +1,8 @@
 #= require app
 #= require models/region-type
 
+$ = jQuery
+
 RegionType = window.OpenCensus.models.RegionType
 
 class RegionTypeDb

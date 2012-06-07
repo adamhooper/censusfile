@@ -2,6 +2,8 @@
 #= require state
 #= require views/graph-view
 
+$ = jQuery
+
 id_counter = 0
 
 class AgeGraphView extends window.OpenCensus.views.GraphView

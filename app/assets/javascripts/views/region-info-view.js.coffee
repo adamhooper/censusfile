@@ -4,6 +4,8 @@
 #= require views/age-graph-view
 #= require views/region-selector-from-region-list
 
+$ = jQuery
+
 h = window.OpenCensus.helpers
 state = window.OpenCensus.state
 

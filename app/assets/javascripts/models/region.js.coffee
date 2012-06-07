@@ -1,6 +1,8 @@
 #= require app
 #= require globals
 
+$ = jQuery
+
 region_types = window.OpenCensus.globals.region_types
 
 class Region

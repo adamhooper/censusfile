@@ -4,6 +4,8 @@
 #= require helpers/region-helpers
 #= require image_path
 
+$ = jQuery
+
 state = window.OpenCensus.state
 globals = window.OpenCensus.globals
 h = window.OpenCensus.helpers
@@ -69,10 +71,14 @@ class RegionSelectorFromRegionList
       region = globals.region_store.get(region_id)
       state[setter](region)
 
-    if region_list?
-      $div.append("<div class=\"prompt\">Drag <img src=\"#{@markerImageUrl}\" alt=\"marker\" width=\"9\" height=\"21\" /> to move</div>")
+    $appended = if region_list?
+      $div.append("<div class=\"prompt\"><a href=\"#\">Zoom here</a> or drag <img src=\"#{@markerImageUrl}\" alt=\"marker\" width=\"9\" height=\"21\" /> to move</div>")
     else
       $div.append("<div class=\"prompt\">Click the map to drop a <img src=\"#{@markerImageUrl}\" alt=\"marker\" width=\"9\" height=\"21\" /></div>")
+
+    $appended.find('a').on 'click', (e) =>
+      e.preventDefault()
+      $(document).trigger('opencensus:zoom_region', [ state["region#{@n}"] ])
 
   refreshSelected: () ->
     $select = $(@div).find('select')

@@ -5,6 +5,8 @@
 #= require models/indicator-db
 #= require models/region-store
 
+$ = jQuery
+
 models = window.OpenCensus.models
 
 region_types = new models.RegionTypeDb(<%= RegionType.order(:position).map{|rt| { name: rt.name, description: rt.name } }.to_json %>)
@@ -15,9 +17,9 @@ window.OpenCensus.globals = {
   defaults: {
     indicator_key: 'pop',
     position: {
-      latitude: 45.5,
-      longitude: -73.5,
-      zoom: 11
+      latitude: 56.4,
+      longitude: -94.9
+      zoom: 3
     }
   },
   style: {
@@ -41,7 +43,7 @@ window.OpenCensus.globals = {
     'stroke-width': '2%',
     pattern: image_path('pattern1.png'),
   },
-  json_tile_url: '/censusfile/tiles'
+  json_tile_url: '/censusfile/tiles/index.php'
   region_types: region_types,
   indicators: indicators,
   region_store: region_store,

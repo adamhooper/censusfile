@@ -1,5 +1,7 @@
 #= require app
 
+$ = jQuery
+
 class RegionStore
   constructor: (@region_types) ->
     @regions = {}
