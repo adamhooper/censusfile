@@ -24,3 +24,5 @@
 /db/statistics/*.ZIP
 /db/statistics/*.csv
 /public/files
+
+/venv/
