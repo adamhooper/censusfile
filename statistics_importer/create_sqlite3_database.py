@@ -75,8 +75,9 @@ class DbRegionWithStatistics:
         # Add area
         d['a'] = self.db_region.area
 
-        # Derive density
-        d['2011']['d'] = d['2011']['p'] / d['a']
+        if d['a'] > 0:
+            # Derive density
+            d['2011']['d'] = d['2011']['p'] / d['a']
 
         return d
 
@@ -155,9 +156,8 @@ if __name__ == '__main__':
 
     store = DbRegionStore(db)
 
-    print('Loading statistics per region and writing to SQLite ("rw" = %d regions read and written): ' % (SLICE_SIZE,), file=sys.stderr, end='', flush=True)
+    print('Loading statistics per region and writing to SQLite ("." = %d regions read and written): ' % (SLICE_SIZE,), file=sys.stderr, end='', flush=True)
     for region_slice in store.regions_in_slices(SLICE_SIZE):
-        regions_with_statistics = []
         regions_by_key = dict((r.key, r) for r in region_slice)
 
         stats_with_keys = stats_collection.find({ '_id': { '$in': list(regions_by_key.keys()) } })
@@ -165,13 +165,9 @@ if __name__ == '__main__':
             key = region_stats['_id']
             region = regions_by_key[key]
             region_with_statistics = region.with_statistics(region_stats)
-            regions_with_statistics.append(region_with_statistics)
 
-        print('r', file=sys.stderr, end='', flush=True)
-
-        for region_with_statistics in regions_with_statistics:
             print(region_with_statistics.to_sql())
 
-        print('w', file=sys.stderr, end='', flush=True)
+        print('.', file=sys.stderr, end='', flush=True)
 
     print('', file=sys.stderr)
