@@ -2,6 +2,8 @@
 
 === db/statistics.sqlite3
 
+TODO: describe how to set up the `venv` directory, using Python 3.3.
+
 Open a console and run this:
 
     ./script/run_mongodb.sh
