@@ -1,6 +1,8 @@
 #!/usr/bin/env python3.3
 #
 # Parses the "Geographic Attribute File" from StatsCan 2011.
+#
+# Runs in ~3 minutes
 
 import io
 from zipfile import ZipFile as _ZipFile
