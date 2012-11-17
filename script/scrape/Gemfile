@@ -1,7 +1,0 @@
-source 'http://rubygems.org'
-
-gem 'fastercsv'
-gem 'nokogiri'
-gem 'httparty'
-gem 'activesupport'
-gem 'dbf'
