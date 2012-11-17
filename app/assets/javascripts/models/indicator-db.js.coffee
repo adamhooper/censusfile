@@ -6,24 +6,23 @@ $ = jQuery
 Indicator = window.OpenCensus.models.Indicator
 
 class IndicatorDb
-  constructor: (properties_list) ->
-    @indicators = (new Indicator(properties) for properties in properties_list)
-    @indicators_by_key = {}
+  constructor: (@indicators) ->
+    indicator.key = key for key, indicator of @indicators
     @indicators_by_name = {}
-    (@indicators_by_key[indicator.key] = indicator) for indicator in @indicators
+    (@indicators_by_name[indicator.name] = indicator) for __, indicator of @indicators
+    undefined
 
   findByKey: (key) ->
-    @indicators_by_key[key]
+    @indicators[key]
+
+  findByName: (name) ->
+    @indicators_by_name[name]
 
   findMapIndicatorForTextIndicator: (text_indicator) ->
     key = {
-      pop: 'popdens',
-      gro: 'gro',
-      popdwe: 'popdwe',
-      agemedian: 'agemedian',
-      sexm: 'sexm',
+      population: 'population_density'
     }[text_indicator.key]
 
-    key? && @indicators_by_key[key] || undefined
+    key? && @indicators[key] || text_indicator
 
 window.OpenCensus.models.IndicatorDb = IndicatorDb

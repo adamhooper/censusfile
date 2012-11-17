@@ -168,9 +168,7 @@ class MapTile
     return @mapIndicator.bucketForValue(datum.value) && true || false
 
   getFillForRegion: (region) ->
-    datum = region.getDatum(@mapIndicator)
-    return undefined unless datum?.value?
-    bucket = @mapIndicator.bucketForValue(datum.value)
+    bucket = region.getBucket(@mapIndicator)
     bucket?.color
 
   handleData: (data) ->

@@ -1,88 +1,64 @@
 #= require app
 #= require state
-#= require views/graph-view
+#= require helpers/format-numbers
 
 $ = jQuery
 
+h = window.OpenCensus.helpers
+
 id_counter = 0
 
-class AgeGraphView extends window.OpenCensus.views.GraphView
-  constructor: (@region) ->
-    super(@region)
+class AgeGraphView
+  constructor: (@data) ->
 
   _getNextDivId: () ->
     "opencensus-age-graph-view-#{id_counter += 1}"
 
-  getFragment: (width, height, background_color) ->
-    agem = @region?.statistics?.agem
-    agef = @region?.statistics?.agef
+  appendFragmentToContainer: ($container) ->
+    return undefined if !@data?.t?
 
-    return undefined if !agem?.value || !agef.value?
-
-    # Prepend 0 so empty string becomes 0
-    agem_ints = (parseInt("0#{a}", 10) for a in agem.value.split(/,/))
-    agef_ints = (parseInt("0#{a}", 10) for a in agef.value.split(/,/))
-
-    age_ints = (agem_ints[i] + agef_ints[i] for i in [0...agem_ints.length])
     categories = [ '0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+' ]
+    age_counts = (@data.t[i] || 0 for __, i in categories) # ".t" = "total" (as opposed to "m" or "f")
 
-    $div = $('<div class="graph"><div class="inner"></div></div>')
-    id = this._getNextDivId()
-    $div.find('div.inner').attr('id', id)
+    values = ([ categories[i], a ] for a, i in age_counts)
+    values.reverse()
 
-    $('body').append($div) # so jqplot will work; we'll move it later
-    $div.children().width(width)
-    $div.children().height(height)
-
-    values = ([ a, categories[i] ] for a, i in age_ints)
-
-    # max 4 ticks
-    max_int = 0
-    for int in age_ints
-      max_int = int if int > max_int
-    interval = max_int * .3
+    # Calculate max_count and rounded_interval
+    max_count = 0
+    for count in age_counts
+      max_count = count if count > max_count
+    interval = max_count * .3
     rounded_interval = interval.toFixed(0)
     if rounded_interval.length > 1
       rounded_interval = parseInt(rounded_interval.substring(0, 1) + rounded_interval.slice(1).replace(/\d/g, '0'), 10)
     else
       rounded_interval = parseInt(rounded_interval, 10)
+    if max_count / rounded_interval > 5
+      rounded_interval *= 1.5
+    max_count = Math.ceil(max_count / rounded_interval) * rounded_interval
 
-    $.jqplot(id, [values], {
-      highlighter: {
-        show: true,
-        tooltipAxes: 'x',
-        tooltipLocation: 'e',
-      },
-      cursor: { show: false },
-      seriesDefaults: {
-        renderer: $.jqplot.BarRenderer,
-        rendererOptions: {
-          barDirection: 'horizontal',
-          fillToZero: true,
-          highlightMouseOver: true,
-        },
-        shadow: false,
-      },
-      axes: {
-        yaxis: {
-          renderer: $.jqplot.CategoryAxisRenderer,
-          tickOptions: {
-            showGridline: false,
-          },
-        },
-        xaxis: {
-          pad: 1.1,
-          min: 0,
-          tickInterval: rounded_interval
-        },
-      },
-      grid: {
-        background: background_color || 'white',
-        shadow: false,
-        borderWidth: 0,
-      },
-    })
+    return undefined if !max_count && !rounded_interval
 
-    $div
+    html_parts = ['<div class="age-graph-view">']
+
+    tick = 0
+    html_parts.push('<div class="ticks">')
+    while tick <= max_count
+      html_parts.push("<div style=\"left: #{tick / max_count * 100}%\"><span>#{h.format_big_integer(tick)}</span></div>")
+      tick += rounded_interval
+    html_parts.push('</div>')
+
+    for ca in values
+      category = ca[0]
+      age_count = ca[1]
+      percent = age_count / max_count * 100
+
+      html_parts.push("<div class=\"age-count\"><div class=\"age\">#{category}</div><div class=\"bar\" style=\"width:#{percent}%\" title=\"#{h.format_integer(age_count)} people aged #{category}\"></div></div>")
+
+    html_parts.push('</div>')
+
+    html = html_parts.join('')
+
+    $container.append(html)
 
 window.OpenCensus.views.AgeGraphView = AgeGraphView

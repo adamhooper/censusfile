@@ -8,6 +8,7 @@ $ = jQuery
 
 h = window.OpenCensus.helpers
 state = window.OpenCensus.state
+globals = window.OpenCensus.globals
 
 AgeGraphView = window.OpenCensus.views.AgeGraphView
 RegionSelectorFromRegionList = window.OpenCensus.views.RegionSelectorFromRegionList
@@ -27,23 +28,18 @@ class RegionInfoView
     state.onRegion2Changed 'region-info-view', () => this.refresh()
 
   refresh: () ->
-    region = state.region1
-    compareRegion = state.region2
+    region1 = state.region1
+    region2 = state.region2
 
-    regionData = this.regionToData(region)
-    compareRegionData = this.regionToData(compareRegion)
+    region1Data = this.regionToData(region1)
+    region2Data = this.regionToData(region2)
 
-    visibleStatistics = this.visibleStatistics(regionData, compareRegionData)
+    indicators = this.visibleIndicators(region1Data, region2Data)
 
-    this.refreshVisibleRows(visibleStatistics)
+    this.refreshVisibleRows(indicators)
 
-    this.fillTableColumnData('region', regionData)
-    this.fillTableColumnData('compare-region', compareRegionData)
-
-    this.refreshBarWidths(regionData, compareRegionData)
-
-    this.refreshUrls(region, compareRegion)
-    this.refreshAgeGraphView(region, compareRegion)
+    this.fillTableData(indicators, region1Data, region2Data)
+    this.refreshUrls(region1, region2)
 
   _fillThUrl: ($th, url) ->
     $th.empty()
@@ -61,157 +57,91 @@ class RegionInfoView
     this._fillThUrl($th1, region?.url())
     this._fillThUrl($th2, compareRegion?.url())
 
-  _refreshOneAgeGraphView: ($div, region, background_color) ->
-    $div.empty()
-    chart = new AgeGraphView(region)
-    fragment = chart.getFragment($div.width(), $div.height(), background_color)
-    $div.append(fragment) if fragment?
+  formatters: {
+    population: (datum, normalized_value) ->
+      if !normalized_value? || normalized_value < 0.1
+        normalized_value = 0.1
+      bar_width = normalized_value * 100 # max: 100px
+      "<div class=\"population\"><span class=\"bar\" width=\"#{bar_width}px\" /> <span class=\"value\">#{h.format_integer(datum.value)}</span></div>"
+    growth: (datum, normalized_value) ->
+      if datum.value?
+        s = h.format_float(datum.value)
+        positive = s.charAt(0) != '-'
+        s = "+#{s}" if positive
+        "<div class=\"growth\"><span class=\"value #{positive && 'positive' || 'negative'}\">#{s}</span><span class=\"unit\">%</span></div>" # not HTML-safe
+    fraction_male: (datum, normalized_value) ->
+      if datum.value?
+        f = 100 * datum.value
+        m = 100 - f
 
-  refreshAgeGraphView: (region, compareRegion) ->
-    $tr = $(@div).find('tr.ages')
-    this._refreshOneAgeGraphView($tr.find('td.region .age-chart'), region, '#ededee')
-    this._refreshOneAgeGraphView($tr.find('td.compare-region .age-chart'), compareRegion, '#d8d7d5')
+        """
+          <div class=\"sex-f\"><span class=\"value\">#{h.format_float(f)}</span><span class=\"unit\">%</span></div>
+          <div class=\"sex-m\"><span class=\"value\">#{h.format_float(m)}</span><span class=\"unit\">%</span></div>
+        """
+    ages: (datum, normalized_value) ->
+      new AgeGraphView(datum.value)
+    population_density: () ->
+  }
 
-  formatValue: (key, value) ->
-    switch key
-      when 'pop' then h.format_integer(value)
-      when 'dwe' then h.format_integer(value)
-      when 'gro' then value.toFixed(1).charAt(0) == '-' && h.format_float(value, 1) || "+#{h.format_float(value, 1)}"
-      when 'popdwe' then h.format_float(value, 1)
-      when 'sexf' then h.format_float(value, 1)
-      when 'sexm' then h.format_float(value, 1)
-      else "#{value}"
+  appendDatumToContainer: ($container, indicator, datum, normalized_value) ->
+    $container.empty()
+    output = @formatters[indicator.key](datum, normalized_value)
+    if output?
+      if output.appendFragmentToContainer?
+        output.appendFragmentToContainer($container)
+      else
+        # output is HTML
+        $container.append(output)
 
-  regionToData: (region) ->
-    if !region?
-      return {
-        pop: undefined,
-        gro: undefined,
-        dwe: undefined,
-        popdwe: undefined,
-        sexm: undefined,
-        sexf: undefined,
-        ages: undefined,
-      }
-
-    ret = {
-      pop: region.statistics?.pop
-      gro: region.statistics?.gro,
-      dwe: region.statistics?.dwe,
-      popdwe: region.statistics?.popdwe,
-      sexm: region.statistics?.sexm,
-    }
-    ret.sexf = ret.sexm? && { value: 100.0 - ret.sexm.value, note: ret.sexm.note } || undefined
-    ret.ages = ret.sexm? && true || undefined # just to make the heading appear/disappear
-    ret
-
-  visibleStatistics: (region1Data, region2Data) ->
+  regionToData: (region, indicators) ->
     ret = {}
-    for key in [ 'pop', 'gro', 'dwe', 'popdwe', 'sexm', 'sexf', 'ages' ]
-      ret[key] = (region1Data?[key]? || region2Data?[key]?)
-    ret.regions = (region1Data? || region2Data?)
+    for __, indicator of globals.indicators.indicators
+      ret[indicator.key] = region?.getDatum(indicator)
+
     ret
 
-  refreshVisibleRows: (visibleRows) ->
-    for key, visible of visibleRows
-      $tbodies = $(@div).find("thead.#{key}, tbody.#{key}")
-      if visible
-        $tbodies.show()
-      else
-        $tbodies.hide()
+  visibleIndicators: (region1Data, region2Data) ->
+    ret = {}
+    ret[key] = indicator for key, indicator of globals.indicators.indicators when region1Data[key]? || region2Data[key]
+    ret
 
-  fillTableColumnData: (columnClass, data) ->
-    $tds = $(@div).find("td.#{columnClass}")
+  refreshVisibleRows: (visibleIndicators) ->
+    $tbodies = $(@div).find('thead, tbody')
+    $tbodies.filter(':not(.regions):not(.links)').hide()
+    for key, __ of visibleIndicators
+      $tbodies.filter(".#{key}").show()
+    undefined
 
-    for key, datum of data
-      $span = $tds.find("span.#{key}.value")
-      $div = $tds.find("div.#{key}")
+  fillTableData: (indicators, region1Data, region2Data) ->
+    $region1Tds = $('td.region', @div)
+    $region2Tds = $('td.compare-region', @div)
 
-      if datum?.value?
-        $span.text(this.formatValue(key, datum.value))
-        $div.show()
-      else
-        $span.empty()
-        $div.hide()
+    for key, indicator of indicators
+      datum1 = region1Data?[key]
+      datum2 = region2Data?[key]
 
-  refreshBarWidths: (region1Data, region2Data) ->
-    for key, value1 of region1Data
-      value2 = region2Data[key]
+      normalized1 = this._normalize(datum1?.value, datum2?.value)
+      normalized2 = this._normalize(datum2?.value, datum1?.value)
 
-      value1 = value1?.value
-      value2 = value2?.value
+      $td1 = $("tbody.#{key} td.region", @div)
+      $td2 = $("tbody.#{key} td.compare-region", @div)
 
-      $bar1 = $(@div).find("td.region div.#{key} span.bar")
-      $bar2 = $(@div).find("td.compare-region div.#{key} span.bar")
+      $td1.empty()
+      if datum1?.value?
+        this.appendDatumToContainer($td1, indicator, datum1, normalized1)
 
-      continue if $bar1.length < 1 && $bar2.length < 1
+      $td2.empty()
+      if datum2?.value?
+        this.appendDatumToContainer($td2, indicator, datum2, normalized2)
 
-      $bars = [ $bar1, $bar2 ]
-
-      if key == 'popdwe'
-        widths = this._getIndicatorBarWidths(key, value1, value2)
-      else
-        widths = this._getComparedIndicatorBarWidths(key, value1, value2)
-
-      for i in [ 0, 1 ]
-        width = widths[i]
-        $bar = $bars[i]
-
-        continue if !width? || !$bar?
-
-        if width
-          $bar.width(width)
-          $bar.show()
-        else
-          $bar.hide()
-
-  _getIndicatorBarWidths: (key, value1, value2) ->
-    maxWidth = 100
-    unitWidth = {
-      popdwe: 10,
-    }[key]
-
-    width1 = value1? && (value1 * unitWidth) || 0
-    width1 = maxWidth if width1 > maxWidth
-
-    width2 = value1? && (value2 * unitWidth) || 0
-    width2 = maxWidth if width2 > maxWidth
-
-    [ width1, width2 ]
-
-  _getComparedIndicatorBarWidths: (key, value1, value2) ->
-    maxWidth = 100
-    unitWidth = {
-      pop: 10,
-      dwe: 20,
-    }[key]
-    maxMultiplier = maxWidth / unitWidth
-
-    width1 = 0
-    width2 = 0
-
-    if (value2 && !value1) || (value1 && value2 && value1 > value2)
-      swap = true
-      [value1, value2] = [value2, value1]
+  # Returns this value, normalized so the larger is 1.
+  # Returns undefined when it wouldn't make sense (e.g., there's no second
+  # value).
+  _normalize: (value, other_value) ->
+    if value? && other_value? && value instanceof Number && value > 0 && other_value > 0
+      value / Math.max(value, other_value)
     else
-      swap = false
-
-    if value1
-      if value2
-        if value1 * maxMultiplier >= value2
-          width1 = unitWidth
-          width2 = unitWidth * (value2 / value1)
-        else
-          width2 = maxWidth
-          width1 = maxWidth * (value1 / value2)
-      else
-        width1 = unitWidth
-        width2 = 0
-
-    if swap
-      [ width2, width1 ]
-    else
-      [ width1, width2 ]
+      undefined
 
 $ ->
   $div = $('#opencensus-wrapper div.region-info')

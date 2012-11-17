@@ -12,6 +12,10 @@ $color_faded: #777;
 $color_notice: #999;
 $color_error: #933;
 
+$color_red: #933;
+$color_green: #393;
+$color_blue: #78a;
+
 $width_page: 960px;
 $padding_page: 17px;
 $width_map: 680px;
@@ -39,7 +43,6 @@ body {
 
   * {
     font-family: 'Open Sans', sans-serif;
-    font-weight: bold;
   }
 
   form.location {
@@ -271,7 +274,7 @@ body {
         width: 0;
       }
 
-      tbody.pop span.bar {
+      tbody.population span.bar {
         background: url(image_path('population-repeated.png'));
       }
 
@@ -314,7 +317,7 @@ body {
         line-height: 1.4;
       }
 
-      thead.pop th {
+      thead.population th {
         border-top: none;
       }
 
@@ -345,17 +348,31 @@ body {
         span.value {
           font-size: 1.25em;
           color: $color_strong;
+
+          &.positive {
+            color: $color_green;
+          }
+          &.negative {
+            color: $color_red;
+          }
         }
       }
 
-      div.sexm, div.sexf {
-        display: inline;
+      div.sex-m, div.sex-f {
+        display: inline-block;
         vertical-align: middle;
+        line-height: 25px;
+        padding-left: 15px; // image is 10px
+        background-repeat: no-repeat;
+        margin-right: 20px;
+      }
 
-        img, span {
-          vertical-align: middle;
-          line-height: 25px;
-        }
+      div.sex-m {
+        background-image: url(<%= image_path('sexm-icon.png') %>);
+      }
+
+      div.sex-f {
+        background-image: url(<%= image_path('sexf-icon.png') %>);
       }
 
       tr.ages td {
@@ -448,6 +465,65 @@ body {
         margin-right: .3em;
         border: 2px solid white;
         vertical-align: middle;
+      }
+    }
+  }
+
+  div.age-graph-view {
+    $label_width: 3.5em;
+
+    clear: both;
+    padding-left: $label_width;
+    padding-bottom: .2em; // for ticks
+    margin-bottom: 1.2em; // for tick labels
+    font-size: .6em;
+    font-weight: normal;
+    line-height: 1.1em;
+    white-space: nowrap;
+    position: relative;
+    vertical-align: middle;
+
+    div.age-count {
+      position: relative; // show up over div.ticks
+      div.age {
+        display: inline-block;
+        width: $label_width - .5em;
+        margin-left: -$label_width;
+        padding-right: .5em;
+        text-align: right;
+      }
+
+      div.bar {
+        display: inline-block;
+        background: $color_blue;
+        height: .6em;
+      }
+    }
+
+    div.ticks {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: $label_width;
+      right: 0;
+
+      div {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        border-left: 1px solid $color_border;
+        width: 1px;
+        // left: is specified in JS
+      }
+
+      span {
+        color: $color_faded;
+        display: block;
+        position: absolute;
+        bottom: -1.2em;
+        right: -1px;
+        text-align: right;
+        width: 5em;
       }
     }
   }

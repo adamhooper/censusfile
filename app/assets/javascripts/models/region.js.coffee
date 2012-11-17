@@ -18,9 +18,18 @@ class Region
     v2 = rhs?.statistics?.pop?.value || -region_types.indexOfName(rhs.type)
     v1 - v2
 
+  getValue: (indicator) ->
+    indicator.valueForStatistics(@statistics)
+
   getDatum: (indicator) ->
-    indicator_key = typeof(indicator) == 'String' && indicator || indicator.key
-    @statistics?[indicator_key]
+    value = this.getValue(indicator)
+    value? && {
+      value: value,
+      z: @statistics.z
+    } || undefined
+
+  getBucket: (indicator) ->
+    indicator.bucketForStatistics(@statistics)
 
   human_name: () ->
     region_type = region_types.findByName(@type)

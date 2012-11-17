@@ -9,16 +9,10 @@
 
   .nav
     %ul.indicators
-      %li.pop.selected
-        %a{:href => '#pop'} Population
-      %li.popdwe
-        %a{:href => '#popdwe'} People per dwelling
-      %li.gro
-        %a{:href => '#gro'} Growth
-      %li.agemedian
-        %a{:href => '#agemedian'} Age distribution
-      %li.sexm
-        %a{:href => '#sexm'} Sex distribution
+      %li.population.selected
+        %a{:href => '#population'} Population
+      %li.growth
+        %a{:href => '#growth'} Growth
 
   %form.location
     %p.startup-content Enter an address to find census data around it:
@@ -42,72 +36,26 @@
           %tr
             %th.region/
             %th.compare-region/
-        %thead.sub.pop
+        %thead.sub.population
           %tr
             %th.region Population
             %th.compare-region/
-        %tbody.pop
+        %tbody.population
           %tr
             %td.region
-              %div.pop
-                %span.pop.bar
-                %span.pop.value
-              %div.gro
-                %span.gro.value<
-                %span.unit> %
             %td.compare-region
-              %div.pop
-                %span.pop.bar
-                %span.pop.value
-              %div.gro
-                %span.gro.value<
-                %span.unit> %
-        %thead.sub.dwe
-          %tr
-            %th.region Dwellings
-            %th.compare-region/
-        %tbody.dwe
+        %tbody.growth
           %tr
             %td.region
-              %div.dwe
-                %span.dwe.bar
-                %span.dwe.value
-              %div.popdwe
-                %span.popdwe.bar
-                %span.popdwe.value
-                %span.unit people per dwelling
             %td.compare-region
-              %div.dwe
-                %span.dwe.bar
-                %span.dwe.value
-              %div.popdwe
-                %span.popdwe.bar
-                %span.popdwe.value
-                %span.unit people per dwelling
-        %thead.sub.sexm
+        %thead.sub.fraction_male
           %tr
             %th.region Sexes
             %th.compare-region/
-        %tbody.sexm
-          %tr.sexm
+        %tbody.fraction_male
+          %tr
             %td.region
-              %div.sexf
-                = image_tag('sexf-icon.png', :alt => 'Female')
-                %span.sexf.value<
-                %span.unit> %
-              %div.sexm
-                = image_tag('sexm-icon.png', :alt => 'Male')
-                %span.sexm.value<
-                %span.unit> %
             %td.compare-region
-              %div.sexf
-                = image_tag('sexf-icon.png', :alt => 'Female')
-                %span.sexf.value<
-                %span.unit> %
-              %div.sexm
-                = image_tag('sexm-icon.png', :alt => 'Male')
-                %span.sexm.value<
-                %span.unit> %
         %thead.sub.ages
           %tr
             %th.region Ages
@@ -115,9 +63,7 @@
         %tbody.ages
           %tr.ages
             %td.region
-              %div.age-chart
             %td.compare-region
-              %div.age-chart
         %tbody.links
           %tr
             %td.region

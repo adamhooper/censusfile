@@ -4,16 +4,21 @@ $ = jQuery
 
 class Indicator
   constructor: (attributes) ->
-    @key = attributes.key
     @name = attributes.name
-    @value_type = attributes.value_type
-    @unit = attributes.unit
-    @description = attributes.description
-    @buckets = $.parseJSON(attributes.buckets)
+    @unit = attributes.unit || ''
+    @value_function = attributes.value_function
+    @buckets = attributes.buckets
+
+  valueForStatistics: (statistics) ->
+    statistics && @value_function(statistics)
 
   bucketForValue: (value) ->
-    return undefined if !value?
+    return undefined if !value? || !@buckets?
     for bucket in @buckets
       return bucket if !bucket.max? || bucket.max >= value
+
+  bucketForStatistics: (statistics) ->
+    value = this.valueForStatistics(statistics)
+    this.bucketForValue(value)
 
 window.OpenCensus.models.Indicator = Indicator
