@@ -4,25 +4,20 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
+# Tempfiles
 *.pyc
 *.swp
-
-# Ignore bundler config
-/.bundle
-
-# Ignore the default SQLite database.
-/db/*.sqlite3
-
-# Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
-/tile_renderer/ext/build/
 
-/db/shapes/g*000b11*.*
-/db/shapes/92-160-g2011001-eng.pdf
-/db/statistics/*.zip
-/db/statistics/*.ZIP
-/db/statistics/*.csv
+# Derived files
+/venv/
+/.bundle
+/tile_renderer/ext/build/
+/db/*.sqlite3
+/script/.pgpass
 /public/files
 
-/venv/
+# Input files (they're too darned big)
+/db/shapes/g*000b11*.*
+/db/shapes/92-160-g2011001-eng.pdf
