@@ -10,11 +10,13 @@ Open a console and run this:
 
 Keep that running. Open a second console and run this:
 
-    ./script/create_sqlite3_file.sh db/statistics.sqlite3
+    ./script/render_statistics.sh db/statistics.sqlite3
 
-After it's done (it should take about 10-15 minutes), you can close both consoles.
+(Ensure `db/statistics.sqlite3` does not exist before running this. Always create a new file.)
 
-The code you're running lives in `statistics_importer`, and the source data (from Statistics Canada) are in `db/statistics/`.
+After it's done (it should take about 10-15 minutes), you can close both consoles. The statistics will remain easily-accessible via MongoDB, in `db/mongodb/db/`. You can re-run certain steps to overwrite that data.
+
+The code you're running lives in `statistics_renderer`, and the source data (from Statistics Canada) are in `db/statistics/`.
 
 === db/tiles.sqlite3
 
