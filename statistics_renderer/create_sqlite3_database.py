@@ -126,7 +126,10 @@ class DbRegion:
         self.region_uid = region_uid
         self.area = area
 
-        self.key = region_type + '-' + region_uid
+        if self.region_type == 'Country':
+            self.key = 'Province-01' # This is what StatsCan calls it
+        else:
+            self.key = region_type + '-' + region_uid
 
         self.children_zoom_level = None
 
@@ -149,7 +152,6 @@ class DbRegionStore:
                 id, type, uid,
                 CASE WHEN given_area_in_m > 1 THEN given_area_in_m ELSE polygon_area_in_m END
             FROM regions
-            WHERE type <> 'ConsolidatedSubdivision'
             ''')
         for r in c:
             region = DbRegion(*r)

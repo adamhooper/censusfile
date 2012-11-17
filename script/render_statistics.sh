@@ -12,4 +12,6 @@ DIR=`dirname $0`/..
 
 "$DIR"/statistics_renderer/import_bounding_boxes.py
 
+"$DIR"/statistics_renderer/calculate_consolidated_subdivisions.py
+
 "$DIR"/statistics_renderer/create_sqlite3_database.py | sqlite3 "$1"
