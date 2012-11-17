@@ -14,6 +14,15 @@ window.OpenCensus.helpers.format_float = (n, decimals = 2) ->
 window.OpenCensus.helpers.format_integer = (n) ->
   window.OpenCensus.helpers.format_float(n, 0)
 
+window.OpenCensus.helpers.format_big_integer = (n) ->
+  s = window.OpenCensus.helpers.format_integer(n)
+  if m = /^(.*),000,000$/.exec(s)
+    "#{m[1]}M"
+  else if m = /^(.*),000$/.exec(s)
+    "#{m[1]}K"
+  else
+    s
+
 window.OpenCensus.helpers.format_percent = (n, decimals = 2) ->
   "#{window.OpenCensus.helpers.format_float(n * 100, decimals)}%"
 
