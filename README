@@ -1,3 +1,23 @@
+== To generate data files
+
+=== db/statistics.sqlite3
+
+Open a console and run this:
+
+    ./script/run_mongodb.sh
+
+Keep that running. Open a second console and run this:
+
+    ./script/create_sqlite3_file.sh db/statistics.sqlite3
+
+After it's done (it should take about 10-15 minutes), you can close both consoles.
+
+The code you're running lives in `statistics_importer`, and the source data (from Statistics Canada) are in `db/statistics/`.
+
+=== db/tiles.sqlite3
+
+It's a long, enormous story. I'll write it up later.
+
 == How I did certain things
 
 === The "regions" table
