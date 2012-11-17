@@ -4,20 +4,18 @@
 #
 # Runs in ~3 minutes
 
-import psycopg2
-import psycopg2.extensions
-
-import master_db
+import db
+import stats_db
 
 source_dsn = 'dbname=opencensus_dev user=opencensus_dev password=opencensus_dev host=localhost'
 
 def main():
     import sys
 
-    db = psycopg2.connect(source_dsn)
-    collection = master_db.get_collection()
+    connection = db.connect()
+    collection = stats_db.get_collection()
 
-    c = db.cursor()
+    c = connection.cursor()
 
     print('Querying for bounding boxes of all regions...', file=sys.stderr)
     c.execute("""

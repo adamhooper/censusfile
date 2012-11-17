@@ -10,12 +10,8 @@ import json
 import sys
 import zlib
 
-import psycopg2
-import psycopg2.extensions
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
-
-import master_db
+import db
+import stats_db
 
 source_dsn = 'dbname=opencensus_dev user=opencensus_dev password=opencensus_dev host=localhost'
 SLICE_SIZE = 1000
@@ -184,14 +180,14 @@ class DbRegionStore:
 if __name__ == '__main__':
     import sys
 
-    db = psycopg2.connect(source_dsn)
-    stats_collection = master_db.get_collection()
+    connection = db.connect()
+    stats_collection = stats_db.get_collection()
 
     print('Creating output database...', file=sys.stderr)
     print('PRAGMA synchronous = OFF;')
     print('CREATE TABLE region_statistics (region_id INTEGER PRIMARY KEY, statistics BLOB);')
 
-    store = DbRegionStore(db)
+    store = DbRegionStore(connection)
 
     print('Loading statistics per region and writing to SQLite ("." = %d regions read and written): ' % (SLICE_SIZE,), file=sys.stderr, end='', flush=True)
     for region_slice in store.regions_in_slices(SLICE_SIZE):

@@ -5,9 +5,9 @@ from pymongo import Connection
 def get_collection():
     connection = Connection('localhost', 23678)
     database = connection.censusfile
-    return MasterDbCollection(database.regions)
+    return StatsDbCollection(database.regions)
 
-class MasterDbCollection:
+class StatsDbCollection:
     def __init__(self, collection):
         self.collection = collection
 
@@ -15,9 +15,9 @@ class MasterDbCollection:
         return self.collection.find(json)
 
     def get_region(self, region_id):
-        return MasterDbRegion(self, region_id)
+        return StatsDbRegion(self, region_id)
 
-class MasterDbRegion:
+class StatsDbRegion:
     def __init__(self, collection, region_id):
         self.collection = collection.collection
         self.region_id = region_id

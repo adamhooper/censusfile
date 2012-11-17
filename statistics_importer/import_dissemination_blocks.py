@@ -7,7 +7,7 @@
 import io
 from zipfile import ZipFile as _ZipFile
 
-import master_db
+import stats_db
 
 class BlockRegion:
     def __init__(self, region2011, region2006s):
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     import os
     import sys
 
-    collection = master_db.get_collection()
+    collection = stats_db.get_collection()
 
     print('Loading correspondence file...', file=sys.stderr)
     uid2011_to_uids2006 = load_uid2011_to_uids2006(

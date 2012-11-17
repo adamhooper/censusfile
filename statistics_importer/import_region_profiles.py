@@ -12,7 +12,7 @@ import io
 import os.path
 from zipfile import ZipFile as _ZipFile
 
-import master_db
+import stats_db
 
 _age_groups = ['0 to 4 years', '5 to 9 years', '10 to 14 years', '15 to 19 years', '20 to 24 years', '25 to 29 years', '30 to 34 years', '35 to 39 years', '40 to 44 years', '45 to 49 years', '50 to 54 years', '55 to 59 years', '60 to 64 years', '65 to 69 years', '70 to 74 years', '75 to 79 years', '80 to 84 years', '85 years and over']
 _age_group_keys = [ '   %s' % age_group for age_group in _age_groups ]
@@ -248,10 +248,10 @@ class RegionProfileCsvImporter:
             self.last_region.write(self.collection)
 
 def main():
-    import master_db
+    import stats_db
 
     loader = FileLoader('db/statistics/region-profiles')
-    collection = master_db.get_collection()
+    collection = stats_db.get_collection()
 
     for region_type, csv_file in loader.region_types_and_csv_files():
         print('Importing a CSV of %s...' % region_type)
