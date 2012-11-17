@@ -24,6 +24,7 @@ The simplest set of data is for the smallest region, the "Dissemination Block". 
 
     {
         "a": 1000000, /* area in m^2 */
+        "b": [ w, s, e, n ], /* lat/lng bounding box, in SRID4326 (ths intuitive one)
         "2011": {
             "p": 1234, /* population */
             "g": 23.4, /* per cent growth - derived, for Dissemination Blocks, and official for others */
@@ -66,6 +67,7 @@ For anything other than a Dissemination Area, we will send all this:
     {
         "z": 12, /* zoom level of largest children--see notes */
         "a": 1000000,
+        "b": [ w, s, e, n ], /* lat/lng bounding box, in SRID4326 (ths intuitive one)
         "2011": {
             "p": 1234, /* population */
             "g": 23.4, /* per cent growth - derived, for Dissemination Blocks, and official for others */
@@ -83,8 +85,8 @@ For anything other than a Dissemination Area, we will send all this:
             "f": 600, /* number of Census Families */
             "pf": 3.3, /* people per family */
             "cf": 1.4, /* children at home per family */
-            "s": [ s, m, s, d, w ], /* people by status: single, married, separated, divorced, widowed */
-            "fp": [ m, c, f, m ], /* number of families that are married, common-law, father-only, mother-only */
+            "s": [ s, m, s, d, w ], /* people by status: single, common-law, married, separated, divorced, widowed */
+            "fp": [ ma, c, f, m ], /* number of families that are married, common-law, father-only, mother-only */
             "dt": [ 0, 1, 2, 3, ... ], /* number of dwellings by type (see below) */
             "do": [ o, r, b ], /* number of dwellings by ownership: owned, rented, band */
         },
@@ -110,6 +112,7 @@ To arrive at the "web" representation, we store this in our database:
     {
         "_id": "DisseminationArea-2342312", /* regions.type + '-' + regions.uid */
         "area": 1000000,
+        "bounding-box": [ w, s, e, n ], /* lat/lng, in SRID4326 (ths intuitive one)
         "2011": {
             "population": {
                 "total": 1234,
@@ -156,8 +159,8 @@ To arrive at the "web" representation, we store this in our database:
                 "by-parents": {
                     "married": 230,
                     "common-law": 230,
-                    "mother-only": 120,
-                    "father-only": 20
+                    "father-only": 20,
+                    "mother-only": 120
                 },
             },
             "dwellings": {
