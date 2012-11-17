@@ -22,15 +22,7 @@ A tile looks like this:
         "uid": "12314",
         "type": "DisseminationArea",
         "name": "Statistics Canada-supplied name",
-        "statistics": {
-          "2011": {
-            "Population": {
-              "value": 4123,
-              "note": "This number is totally correct"
-            }
-          },
-          ...more statistics...
-        }
+        "statistics": { ... }
       }
     },
     ...more features...
@@ -85,12 +77,7 @@ it makes more sense:
 
 === Phase 2: Statistics
 
-We render a table of region_id -> statistics, which looks like the "statistics"
-section in the GeoJSON tile description above. It's straightforward to generate
-this: just loop over indicator_region_values, group by region and year, and
-encode as JSON.
-
-This is in ./render_statistics.py
+We render a table of region-id -> (JSON) statistics in `script/render_statistics.py`
 
 === Phase 3: Merge
 
@@ -102,10 +89,7 @@ For a given tile:
 4. Create the "features" JSON Array using the results from steps 2 and 3.
 5. Create the entire JSON tile through string concatenation.
 
-There's no need for decoding and encoding JSON. The whole thing could
-conceivably be done using SQL. (Why *not* merge as SQL? Because we merge on
-the fly. Otherwise we'd be stuck with an 8GB database on our development
-machine that we need to move to our servers. That would be too slow.)
+There's no need for decoding and encoding JSON: string concatenation is enough.
 
 == Time and space
 
@@ -113,7 +97,7 @@ There is a massive amount of geographic data to process, which is why it's all
 done in Phase 1. But how long will it take?
 
 On a speedy computer (Intel four-core, 2.5Ghz CPU, 8GB RAM), it takes about a
-week to build a web-server-ready database--if you do the proper optimizations.
+week to build a web-server-ready database--if you use the proper optimizations.
 
 Why so long?
 
