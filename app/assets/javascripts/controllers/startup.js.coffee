@@ -26,4 +26,4 @@ startup = ($opencensus_div) ->
 
 $ ->
   $div = $('#opencensus-wrapper')
-  startup($div)
+  #startup($div)
