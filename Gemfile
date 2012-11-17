@@ -8,12 +8,12 @@ gem 'haml'
 gem 'therubyracer'
 
 group :assets do
+  gem 'ruby-haml-js'
+  gem 'jquery-rails'
   gem 'sass-rails'
   gem 'coffee-rails'
   gem 'uglifier'
 end
-
-gem 'jquery-rails'
 
 group :development do
   gem 'unicorn'
