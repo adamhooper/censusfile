@@ -1,0 +1,37 @@
+%table
+  %thead.regions
+    %tr
+      %th.region/
+      %th.compare-region/
+  %thead.sub.population
+    %tr
+      %th.region Population
+      %th.compare-region/
+  %tbody.population
+    %tr
+      %td.region
+      %td.compare-region
+  %tbody.growth
+    %tr
+      %td.region
+      %td.compare-region
+  %thead.sub.fraction_male
+    %tr
+      %th.region Sexes
+      %th.compare-region/
+  %tbody.fraction_male
+    %tr
+      %td.region
+      %td.compare-region
+  %thead.sub.ages
+    %tr
+      %th.region Ages
+      %th.compare-region/
+  %tbody.ages
+    %tr.ages
+      %td.region
+      %td.compare-region
+  %tbody.links
+    %tr
+      %td.region
+      %td.compare-region

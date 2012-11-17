@@ -3,6 +3,7 @@
 #= require helpers/format-numbers
 #= require views/age-graph-view
 #= require views/region-selector-from-region-list
+#= require templates/population-table
 
 $ = jQuery
 
@@ -15,6 +16,8 @@ RegionSelectorFromRegionList = window.OpenCensus.views.RegionSelectorFromRegionL
 
 class RegionInfoView
   constructor: (@div) ->
+    $(@div).append(JST['templates/population-table']())
+
     $regionTh = $(@div).find('th.region:eq(0)')
     $regionTh.append('<div></div>')
     new RegionSelectorFromRegionList($regionTh.find('div'), 1)
