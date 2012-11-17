@@ -1,4 +1,9 @@
 #!/usr/bin/env python3.3
+#
+# Usage: create_sqlite3_database.py | sqlite3 out.sql
+#
+# This script runs in ~1:30 minutes, whether it's piped to sqlite3 or /dev/null.
+# (It's CPU-bound in both Python and SQLite3, so your mileage may vary greatly.)
 
 from binascii import b2a_hex as _b2a_hex
 import json
@@ -17,6 +22,8 @@ SLICE_SIZE = 1000
 
 class DbRegionWithStatistics:
     Schema = {
+        'a': ('area',),
+        'b': ('bounding-box',),
         '2011': {
             'p': ('2011', 'population', 'total'),
             'g': ('2011', 'population', 'growth'),
@@ -26,11 +33,23 @@ class DbRegionWithStatistics:
                 't': ('2011', 'population', 'by-age', 'total')
             },
             'dw': ('2011', 'dwellings', 'total'),
-            's': ('2011', 'population-15-and-over', 'by-status'),
+            's': [
+                ('2011', 'population-15-and-over', 'by-marital-status', 'single'),
+                ('2011', 'population-15-and-over', 'by-marital-status', 'common-law'),
+                ('2011', 'population-15-and-over', 'by-marital-status', 'married'),
+                ('2011', 'population-15-and-over', 'by-marital-status', 'separated'),
+                ('2011', 'population-15-and-over', 'by-marital-status', 'divorced'),
+                ('2011', 'population-15-and-over', 'by-marital-status', 'widowed'),
+            ],
             'f': ('2011', 'families', 'total'),
             'pf': ('2011', 'families', 'people-per-family'),
             'cf': ('2011', 'families', 'children-at-home-per-family'),
-            'fp': ('2011', 'families', 'by-parents')
+            'fp': [
+                ('2011', 'families', 'by-parents', 'married'),
+                ('2011', 'families', 'by-parents', 'common-law'),
+                ('2011', 'families', 'by-parents', 'male'),
+                ('2011', 'families', 'by-parents', 'female')
+            ]
         },
         '2006': {
             'p': ('2006', 'population', 'total')
@@ -44,13 +63,25 @@ class DbRegionWithStatistics:
     def _fill_schema(self, schema):
         if type(schema) == tuple:
             return self._lookup_value(schema)
+        elif type(schema) == list:
+            r = tuple(map(
+                lambda v: 0 if v is None else v,
+                (self._fill_schema(v) for v in schema)))
+            if sum(r) == 0:
+                return None
+            else:
+                return r
         else: # type(schema) == dict
-            return dict(
+            d = dict(
                 filter(
                     lambda kv: kv[1] is not None,
                     ((k, self._fill_schema(v)) for k, v in schema.items())
                 )
             )
+            if len(d) == 0:
+                return None
+            else:
+                return d
 
     def _lookup_value(self, keys):
         d = self.statistics
@@ -75,9 +106,14 @@ class DbRegionWithStatistics:
         # Add area
         d['a'] = self.db_region.area
 
-        if d['a'] > 0:
-            # Derive density
-            d['2011']['d'] = d['2011']['p'] / d['a']
+        if '2011' in d:
+            if 'p' in d['2011']:
+                if d['a'] > 0:
+                    # Derive density
+                    d['2011']['d'] = d['2011']['p'] / d['a'] * 1000000 # m^2 to km^2
+                if 'g' not in d['2011'] and '2006' in d and 'p' in d['2006'] and d['2006']['p'] > 0:
+                    # Derive growth
+                    d['2011']['g'] = (d['2011']['p'] / d['2006']['p'] - 1.0) * 100
 
         return d
 
@@ -117,6 +153,7 @@ class DbRegionStore:
                 id, type, uid,
                 CASE WHEN given_area_in_m > 1 THEN given_area_in_m ELSE polygon_area_in_m END
             FROM regions
+            WHERE type <> 'ConsolidatedSubdivision'
             ''')
         for r in c:
             region = DbRegion(*r)
