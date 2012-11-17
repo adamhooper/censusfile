@@ -15,7 +15,7 @@
 /.bundle
 /tile_renderer/ext/build/
 /db/*.sqlite3
-/script/.pgpass
+/script/dot-pgpass
 /public/files
 
 # Input files (they're too darned big)
