@@ -112,6 +112,7 @@ class MapTile
     state.onIndicatorChanged(event_class, this.onIndicatorChanged, this)
     state.onPoint1Changed(event_class, this.onPoint1Changed, this)
     state.onPoint2Changed(event_class, this.onPoint2Changed, this)
+    state.onHoveringOverMapChanged(event_class, this.onHoveringOverMapChanged, this)
 
     this._refreshOpacity()
 
@@ -282,7 +283,7 @@ class MapTile
     @interaction_grids.pointToRegionList(column, row, @mapIndicator)
 
   _refreshOpacity: () ->
-    hovering = state.hover_region?
+    hovering = state.isHoveringOverMap()
 
     if !@hovering? || hovering != @hovering
       opacity = globals.style[hovering && 'opacity_faded' || 'opacity_full']
@@ -298,6 +299,7 @@ class MapTile
     tilePixel = this.globalMeterToTilePixelOrUndefined(globalMeter)
 
     if tilePixel?
+      state.incHoveringOverTiles() if !@lastMouseMoveWasOnThisTile
       @lastMouseMoveWasOnThisTile = true
 
       hover_region = undefined
@@ -311,12 +313,14 @@ class MapTile
 
       state.setHoverRegion(hover_region) # Will only set if it's different
     else
+      state.decHoveringOverTiles() if @lastMouseMoveWasOnThisTile
       @lastMouseMoveWasOnThisTile = false
 
     true
 
   onMouseOut: () ->
     if @lastMouseMoveWasOnThisTile
+      state.decHoveringOverTiles()
       @lastMouseMoveWasOnThisTile = false
       state.setHoverRegion(undefined)
 
@@ -341,7 +345,6 @@ class MapTile
     @overlayElements.region1?.toFront()
 
   onHoverRegionChanged: (hover_region) ->
-    this._refreshOpacity()
     this._setOverlayElement('hover', hover_region)
 
   onRegion1Changed: (region1) ->
@@ -391,7 +394,15 @@ class MapTile
   onPoint2Changed: (point2) ->
     this._onPointNChanged(2, point2)
 
+  onHoveringOverMapChanged: () ->
+    this._refreshOpacity()
+
   destroy: () ->
+    if @lastMouseMoveWasOnThisTile
+      state.decHoveringOverTiles()
+      @lastMouseMoveWasOnThisTile = false
+      state.setHoverRegion(undefined)
+
     this.dataRequest.abort() if this.dataRequest?
 
     event_class = this.id()

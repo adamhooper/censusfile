@@ -35,6 +35,7 @@ class State
     @region2 = undefined
     @region_list2 = undefined
     @hover_region = undefined
+    @hovering_over_tiles = 0
     @map_bounds = undefined
 
   setIndicator: (indicator) ->
@@ -116,37 +117,54 @@ class State
     globals.region_store.incrementCount(@hover_region.id) if @hover_region?
     $(document).trigger('opencensus:state:hover_region_changed', @hover_region)
 
+  incHoveringOverTiles: () ->
+    @hovering_over_tiles += 1
+    if @hovering_over_tiles == 1
+      $(document).trigger('opencensus:state:hovering_over_map_changed', true)
+
+  decHoveringOverTiles: () ->
+    @hovering_over_tiles -= 1
+    if @hovering_over_tiles == 0
+      $(document).trigger('opencensus:state:hovering_over_map_changed', false)
+
+  isHoveringOverMap: () ->
+    @hovering_over_tiles > 0
+
   onIndicatorChanged: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:indicator_changed.#{callerNamespace}", (e, indicator) ->
-      func.call(oThis || window, indicator)
+      func.call(oThis || {}, indicator)
 
   onPoint1Changed: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:point1_changed.#{callerNamespace}", (e, point) ->
-      func.call(oThis || window, point)
+      func.call(oThis || {}, point)
 
   onPoint2Changed: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:point2_changed.#{callerNamespace}", (e, point) ->
-      func.call(oThis || window, point)
+      func.call(oThis || {}, point)
 
   onRegionList1Changed: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:region_list1_changed.#{callerNamespace}", (e, region_list) ->
-      func.call(oThis || window, region_list)
+      func.call(oThis || {}, region_list)
 
   onRegionList2Changed: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:region_list2_changed.#{callerNamespace}", (e, region_list) ->
-      func.call(oThis || window, region_list)
+      func.call(oThis || {}, region_list)
 
   onRegion1Changed: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:region1_changed.#{callerNamespace}", (e, region) ->
-      func.call(oThis || window, region)
+      func.call(oThis || {}, region)
 
   onRegion2Changed: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:region2_changed.#{callerNamespace}", (e, region) ->
-      func.call(oThis || window, region)
+      func.call(oThis || {}, region)
 
   onHoverRegionChanged: (callerNamespace, func, oThis = undefined) ->
     $(document).on "opencensus:state:hover_region_changed.#{callerNamespace}", (e, hover_region) ->
-      func.call(oThis || window, hover_region)
+      func.call(oThis || {}, hover_region)
+
+  onHoveringOverMapChanged: (callerNamespace, func, oThis=undefined) ->
+    $(document).on "opencensus:state:hovering_over_map_changed.#{callerNamespace}", (e, hovering) ->
+      func.call(oThis || {}, hovering)
 
   removeHandlers: (callerNamespace) ->
     $(document).off(".#{callerNamespace}")
