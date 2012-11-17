@@ -1,4 +1,8 @@
 #!/usr/bin/env python3.3
+#
+# Imports region profiles into statistics database.
+#
+# Runs in ~1.5 minutes
 
 FILENAME_PATTERN = '98-316-XWE2011001-%s_CSV.zip'
 CSV_ENCODING = 'iso-8859-1'
@@ -10,7 +14,7 @@ from zipfile import ZipFile as _ZipFile
 
 import master_db
 
-_age_groups = ['0 to 4 years', '5 to 9 years', '10 to 14 years', '15 to 19 years', '20 to 24 years', '25 to 29 years', '30 to 34 years', '35 to 39 years', '40 to 44 years', '45 to 49 years', '50 to 54 years', '55 to 59 years', '60 to 64 years', '65 to 69 years', '70 to 74 years', '75 to 79 years', '85 years and over']
+_age_groups = ['0 to 4 years', '5 to 9 years', '10 to 14 years', '15 to 19 years', '20 to 24 years', '25 to 29 years', '30 to 34 years', '35 to 39 years', '40 to 44 years', '45 to 49 years', '50 to 54 years', '55 to 59 years', '60 to 64 years', '65 to 69 years', '70 to 74 years', '75 to 79 years', '80 to 84 years', '85 years and over']
 _age_group_keys = [ '   %s' % age_group for age_group in _age_groups ]
 _age_group_keyset = set(_age_group_keys)
 
@@ -88,7 +92,7 @@ class Region:
     def write(self, collection):
         collection_region = collection.get_region(self.region_id)
 
-        collection_region.set('2011.population.by-age.total', self._by_age_arrays())
+        collection_region.set('2011.population.by-age', self._by_age_arrays())
         collection_region.set('2011.population-15-and-over.by-marital-status', self._by_marital_status())
         collection_region.set('2011.families.by-parents', self._by_parents())
 
