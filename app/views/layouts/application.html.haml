@@ -3,9 +3,10 @@
   %head
     %title Canadian Census
     = stylesheet_link_tag('application')
-    = stylesheet_link_tag('http://fonts.googleapis.com/css?family=Open+Sans:400,700')
-    = javascript_include_tag('application')
-    = javascript_include_tag('https://maps.googleapis.com/maps/api/js?v=3.7&sensor=true&key=AIzaSyDWrbWJ46ET44B2Z0UFdqsT3DbsZXKXuqU')
-    = javascript_tag('$.noConflict();')
+    = stylesheet_link_tag('//fonts.googleapis.com/css?family=Open+Sans:400,700')
   %body
     = yield
+
+    = javascript_include_tag('application')
+    = javascript_tag('$.noConflict();')
+    = javascript_include_tag('//maps.googleapis.com/maps/api/js?v=3.7&sensor=true&key=AIzaSyDWrbWJ46ET44B2Z0UFdqsT3DbsZXKXuqU')
