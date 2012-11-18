@@ -6,7 +6,7 @@ class TilesController < ApplicationController
 
     tile = Tile.find(zoom_level, tile_row, tile_column)
 
-    response.headers['Content-Type'] = 'application/json'
+    response.headers['Content-Type'] = 'application/json; charset=utf-8'
 
     render(:text => tile.json)
   end
