@@ -18,57 +18,43 @@ After it's done (it should take about 10-15 minutes), you can close both console
 
 The code you're running lives in `statistics_renderer`, and the source data (from Statistics Canada) are in `db/statistics/`.
 
+See `statistics_renderer/README` to see how this all works.
+
 === db/tiles.sqlite3
 
 It's a long, enormous story. I'll write it up later.
 
-== How I did certain things
+See `tile_renderer/README` to see how tiles are rendered.
 
-=== The "regions" table
+== To launch on Amazon EC2
 
-First, imported tables into "regions". Used ogr2ogr to import individual census files into their own tables, and then ran INSERT INTO ... SELECT ... to query from those individual tables into the "regions" table.
+You need at least 40GB of hard drive space, and it's probably faster to stay away from EBS. That means the minimum instance is m1.small. (So it isn't free.)
 
-There's one problem: Divisions don't have EconomicRegion parents, even though StatsCan's hierarchy diagram says they should. The reason is one exception: Halton, ON (west of Mississauga), which straddles two EconomicRegions. We'll set the parent to a random one of those two, since following StatsCan's hierarchy makes the rest of the code quicker and easier. UPDATE regions SET economic_region_uid = (SELECT MAX(r2.economic_region_uid) FROM regions r2 WHERE r2.type = 'Subdivision' AND r2.division_uid = regions.uid) WHERE type = 'Division';
+Run these commands on a brand-new Ubuntu 12.10 instance, with instance storage attached in `/mnt`.
 
-The "regions" table is our canonical data source. It's slow to create tiles from it, though. So we do speedups.
+    $ sudo apt-get install nginx python3.3 libpython3.3-dev build-essential \
+                           libsqlite3-dev zlib1g-dev uwsgi uwsgi-plugin-python3 
 
-==== Speedups: the "region_polygons" table
+    $ sudo mkdir /mnt/censusfile
+    $ sudo chown ubuntu:ubuntu /mnt/censusfile
+    $ sudo ln -s /mnt/censusfile /opt/censusfile
 
-When fetching a tile, we need to quickly find a pre-rendered list of polygons at the given extent.
+    $ mkdir /opt/censusfile/db
+    $ # copy "tiles.sqlite3" and "statistics.sqlite3" to /opt/censusfile/db
+    $ mkdir /opt/censusfile/conf
+    $ # add "nginx-vhost.conf" to /opt/censusfile/conf
+    $ # add "uwsgi.ini" /opt/censusfile/conf
 
-To create "region_polygons": `INSERT INTO region_polygons (region_id, polygon) SELECT id, ST_Dump(geography).geom FROM regions;`. For any MultiPolygon, the ST_Dump() will create one row in region_polygons for each inner polygon.
+    $ sudo ln -s /opt/censusfile/conf/uwsgi.ini /etc/uwsgi/apps-available/censusfile.ini
+    $ sudo ln -s /etc/uwsgi/apps-available/censusfile.ini /etc/uwsgi/apps-enabled
+    $ sudo service uwsgi restart
+    $ sudo ln -s /opt/censusfile/conf/nginx-vhost.conf /etc/nginx/sites-available/censusfile
+    $ sudo ln -s /etc/nginx/sites-available/censusfile /etc/nginx/sites-enabled
+    $ sudo rm /etc/nginx/sites-enabled/default
+    $ sudo service nginx restart
+    $ curl --resolve censusfile.adamhooper.com:80:127.0.0.1 \
+           http://censusfile.adamhooper.com/regions/8/74/92.geojson # test it renders tiles
 
-Add an area, in square metres. `UPDATE region_polygons SET area_in_m = ST_Area(ST_SetSRID(polygon, 4326));`
-
-Add is_island, because it's helfpul for making the map look right. If an island takes up 40 pixels, people will see it and want to see data on it; for a 40-pixel polygon that isn't an island, it might be okay to show only the polygon's parent's data.
-
-With is_island and area_in_m, we can decide which polygons to show at which zoom levels:
-
-1. Set min_zoom_level for every polygon, up to 15 (because 15 is our max zoom level). Do this by finding out how many pixels the polygon would fill at that zoom level, and turning it on if it fills enough.
-2. Set the same min_zoom_level for all polygons with the same parent region. That means all or no tracts within a metropolitan area will appear, for instance, or all or no dissemination blocks within an area.
-
-Why #1? Because we don't want every polygon showing up at every zoom level. Why #2? Because we don't want only *some* sub-regions of a given region showing up. (Also, we don't want only some *polygons* of a single region showing up, and #2 happens to solve that problem, too.)
-
-With that, we know which polygons we want to render at which zoom levels. Next, we need to render those polygons into tiles. See tile_renderer/ for that.
-
-Then simplify, adding to separate tables so that neighbouring tiles use rows from the same general spot: `SELECT id, region_id, min_longitude, max_longitude, min_latitude, max_latitude, area_in_m, is_island, ST_SimplifyPreserveTopology(polygon, 0.46875000000000000000000) INTO region_polygons_zoom18';
-
-Finally, add indices: on boundaries, area_in_m and is_island. These are what we'll use in our query conditions.
-
-The end result? We can select the appropriate row and return the geometry with ST_AsGeoJSON(). Most of the calculations are already done.
-
-==== Validity
-
-Sometimes ST_SimplifyPreserveGeometry() introduces errors. These will give "side location conflict" errors when using ST_Intersection(). Fix the the errors with ST_Buffer(geometry, 0.0). For instance: `UPDATE region_polygons_zoom18 SET polygon = ST_Buffer(polygon, 0) WHERE ST_IsValid(polygon) IS FALSE`
-
-=== Data
-
-* Download data into CSV format (for 2001, where the only public format is HTML) via script/scrape/
-* Import CSVs using script/import_all_csvs
-* Download 2006 data from the URL shown in script/import-2006-popdwellings, and use that same script to import the .txt file
-* Run script/sanitize_indicators to fix un-sane values
-* Run script/preprocess_indicators to calculate custom indicators: population/area, dwellings/area, etc.
-
-=== Tiles
-
-See tile_renderer/README.
+    $ mkdir /opt/censusfile/public
+    $ # add "index.html" to /opt/censusfile/public
+    $ # add "assets" directory to /opt/censusfile/public
