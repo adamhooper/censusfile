@@ -32,8 +32,7 @@ You need at least 40GB of hard drive space, and it's probably faster to stay awa
 
 Run these commands on a brand-new Ubuntu 12.10 instance, with instance storage attached in `/mnt`.
 
-    $ sudo apt-get install nginx python3.3 libpython3.3-dev build-essential \
-                           libsqlite3-dev zlib1g-dev uwsgi uwsgi-plugin-python3 
+    $ sudo apt-get install nginx python3.3 uwsgi uwsgi-plugin-python3
 
     $ sudo mkdir /mnt/censusfile
     $ sudo chown ubuntu:ubuntu /mnt/censusfile
