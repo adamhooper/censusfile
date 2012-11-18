@@ -4,7 +4,7 @@
 
 $ = jQuery
 
-h = window.OpenCensus.helpers
+h = window.CensusFile.helpers
 
 id_counter = 0
 
@@ -61,4 +61,4 @@ class AgeGraphView
 
     $container.append(html)
 
-window.OpenCensus.views.AgeGraphView = AgeGraphView
+window.CensusFile.views.AgeGraphView = AgeGraphView

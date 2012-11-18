@@ -3,4 +3,4 @@
 
 $ = jQuery
 
-window.OpenCensus.state = new window.OpenCensus.models.State()
+window.CensusFile.state = new window.CensusFile.models.State()

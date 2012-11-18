@@ -7,12 +7,12 @@
 
 $ = jQuery
 
-h = window.OpenCensus.helpers
-state = window.OpenCensus.state
-globals = window.OpenCensus.globals
+h = window.CensusFile.helpers
+state = window.CensusFile.state
+globals = window.CensusFile.globals
 
-AgeGraphView = window.OpenCensus.views.AgeGraphView
-RegionSelectorFromRegionList = window.OpenCensus.views.RegionSelectorFromRegionList
+AgeGraphView = window.CensusFile.views.AgeGraphView
+RegionSelectorFromRegionList = window.CensusFile.views.RegionSelectorFromRegionList
 
 class RegionInfoView
   constructor: (@div) ->

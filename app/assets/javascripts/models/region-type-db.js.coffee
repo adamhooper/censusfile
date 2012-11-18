@@ -3,7 +3,7 @@
 
 $ = jQuery
 
-RegionType = window.OpenCensus.models.RegionType
+RegionType = window.CensusFile.models.RegionType
 
 class RegionTypeDb
   constructor: (properties_list) ->
@@ -19,4 +19,4 @@ class RegionTypeDb
       return i if region_type.name == name
     return undefined
 
-window.OpenCensus.models.RegionTypeDb = RegionTypeDb
+window.CensusFile.models.RegionTypeDb = RegionTypeDb

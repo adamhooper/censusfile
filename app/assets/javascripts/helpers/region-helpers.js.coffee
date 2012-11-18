@@ -3,9 +3,9 @@
 
 $ = jQuery
 
-globals = window.OpenCensus.globals
+globals = window.CensusFile.globals
 
-window.OpenCensus.helpers.region_to_human_html = (region) ->
+window.CensusFile.helpers.region_to_human_html = (region) ->
   region_type_human = globals.region_types.findByName(region.type)?.human_name()
   region_name = region.name
 

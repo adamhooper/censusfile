@@ -5,8 +5,8 @@
 
 $ = jQuery
 
-state = window.OpenCensus.state
-globals = window.OpenCensus.globals
+state = window.CensusFile.state
+globals = window.CensusFile.globals
 
 class MapView
   constructor: (@div) ->
@@ -152,4 +152,4 @@ class MapView
     google.maps.event.addListener @markers['2'], 'dragend', () =>
       callback(@markers['2'].getPosition())
 
-window.OpenCensus.views.MapView = MapView
+window.CensusFile.views.MapView = MapView

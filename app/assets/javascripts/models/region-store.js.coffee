@@ -61,4 +61,4 @@ class RegionStore
 
     ret
 
-window.OpenCensus.models.RegionStore = RegionStore
+window.CensusFile.models.RegionStore = RegionStore

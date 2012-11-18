@@ -6,9 +6,9 @@
 
 $ = jQuery
 
-state = window.OpenCensus.state
-globals = window.OpenCensus.globals
-h = window.OpenCensus.helpers
+state = window.CensusFile.state
+globals = window.CensusFile.globals
+h = window.CensusFile.helpers
 
 class RegionSelectorFromRegionList
   constructor: (@div, @n) ->
@@ -96,4 +96,4 @@ class RegionSelectorFromRegionList
 
     @oldValue = region?.id
 
-window.OpenCensus.views.RegionSelectorFromRegionList = RegionSelectorFromRegionList
+window.CensusFile.views.RegionSelectorFromRegionList = RegionSelectorFromRegionList

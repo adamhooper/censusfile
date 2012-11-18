@@ -9,10 +9,10 @@
 
 $ = jQuery
 
-globals = window.OpenCensus.globals
+globals = window.CensusFile.globals
 region_types = globals.region_types
-state = window.OpenCensus.state
-Region = window.OpenCensus.models.Region
+state = window.CensusFile.state
+Region = window.CensusFile.models.Region
 region_store = globals.region_store
 
 class InteractionGrid
@@ -260,8 +260,14 @@ class MapTile
     "MapTile-#{@zoom}-#{@coord.x}-#{@coord.y}"
 
   url: () ->
-    base_url = globals.json_tile_url.replace('#{n}', ('' + ((@coord.x % 2) * 2 + (@coord.y % 2))))
-    "#{base_url}/#{@zoom}/#{@coord.x}/#{@coord.y}.geojson"
+    replacements = {
+      X: "#{@coord.x}"
+      Y: "#{@coord.y}"
+      Z: "#{@zoom}"
+      N: "#{(@coord.x % 2) * 2 + (@coord.y % 2)}"
+    }
+
+    globals.json_tile_url.replace(/\{(\w)\}/g, (__, letter) -> replacements[letter])
 
   globalMeterToTilePixel: (globalMeter) ->
     [

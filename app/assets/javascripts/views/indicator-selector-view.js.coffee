@@ -4,8 +4,8 @@
 
 $ = jQuery
 
-globals = window.OpenCensus.globals
-state = window.OpenCensus.state
+globals = window.CensusFile.globals
+state = window.CensusFile.state
 
 class IndicatorSelectorView
   constructor: (@ul) ->

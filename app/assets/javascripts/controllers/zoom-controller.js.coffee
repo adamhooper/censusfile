@@ -3,9 +3,9 @@
 
 $ = jQuery
 
-state = window.OpenCensus.state
+state = window.CensusFile.state
 
-window.OpenCensus.controllers.zoom_controller = (map_view) ->
+window.CensusFile.controllers.zoom_controller = (map_view) ->
   # We zoom in when somebody types in an address
   zoom = (latlng) ->
     if state.point2?

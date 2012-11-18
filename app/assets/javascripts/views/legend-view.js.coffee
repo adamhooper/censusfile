@@ -5,9 +5,9 @@
 
 $ = jQuery
 
-globals = window.OpenCensus.globals
-state = window.OpenCensus.state
-h = window.OpenCensus.helpers
+globals = window.CensusFile.globals
+state = window.CensusFile.state
+h = window.CensusFile.helpers
 
 class LegendView
   constructor: (@div) ->

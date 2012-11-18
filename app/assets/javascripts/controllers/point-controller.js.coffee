@@ -6,8 +6,8 @@ $ = jQuery
 
 REGION = 'CA'
 
-state = window.OpenCensus.state
-LocationView = window.OpenCensus.views.LocationView
+state = window.CensusFile.state
+LocationView = window.CensusFile.views.LocationView
 
 point_controller = (location_view) ->
   geocoder = new google.maps.Geocoder()

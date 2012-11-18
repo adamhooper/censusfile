@@ -3,7 +3,7 @@
 
 $ = jQuery
 
-state = window.OpenCensus.state
+state = window.CensusFile.state
 
 class ComparePrompt
   constructor: (@a) ->

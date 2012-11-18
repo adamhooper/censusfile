@@ -3,7 +3,7 @@
 
 $ = jQuery
 
-globals = window.OpenCensus.globals
+globals = window.CensusFile.globals
 defaults = globals.defaults
 
 # State variables:
@@ -169,4 +169,4 @@ class State
   removeHandlers: (callerNamespace) ->
     $(document).off(".#{callerNamespace}")
 
-window.OpenCensus.models.State = State
+window.CensusFile.models.State = State

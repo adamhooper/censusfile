@@ -55,4 +55,4 @@ class RegionType
 
     url_format.replace(/\$\w+/g, (m) -> replacements[m.slice(1)])
 
-window.OpenCensus.models.RegionType = RegionType
+window.CensusFile.models.RegionType = RegionType

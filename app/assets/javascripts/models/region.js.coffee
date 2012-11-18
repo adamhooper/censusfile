@@ -3,7 +3,7 @@
 
 $ = jQuery
 
-region_types = window.OpenCensus.globals.region_types
+region_types = window.CensusFile.globals.region_types
 
 class Region
   constructor: (@id, @name, @parent_ids, @statistics) ->
@@ -47,4 +47,4 @@ class Region
     region_type = region_types.findByName(@type)
     region_type.url_for_region(this)
 
-window.OpenCensus.models.Region = Region
+window.CensusFile.models.Region = Region

@@ -1,11 +1,11 @@
 $ = jQuery
 
-window.OpenCensus = {
+window.CensusFile = {
   helpers: {},
   views: {},
   models: {},
   controllers: {}
 }
 
-# clients should require "globals" for window.OpenCensus.globals
-# clients should require "state" for window.OpenCensus.state
+# clients should require "globals" for window.CensusFile.globals
+# clients should require "state" for window.CensusFile.state

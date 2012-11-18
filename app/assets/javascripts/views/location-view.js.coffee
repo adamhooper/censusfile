@@ -26,4 +26,4 @@ class LocationView
     else
       $status.hide()
 
-window.OpenCensus.views.LocationView = LocationView
+window.CensusFile.views.LocationView = LocationView

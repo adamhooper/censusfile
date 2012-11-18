@@ -21,4 +21,4 @@ class Indicator
     value = this.valueForStatistics(statistics)
     this.bucketForValue(value)
 
-window.OpenCensus.models.Indicator = Indicator
+window.CensusFile.models.Indicator = Indicator

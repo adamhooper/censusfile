@@ -2,7 +2,7 @@
 
 $ = jQuery
 
-state = window.OpenCensus.state
+state = window.CensusFile.state
 
 class Geocoder
   constructor: (caller) ->

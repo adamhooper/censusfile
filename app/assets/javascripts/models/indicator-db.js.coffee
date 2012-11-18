@@ -3,7 +3,7 @@
 
 $ = jQuery
 
-Indicator = window.OpenCensus.models.Indicator
+Indicator = window.CensusFile.models.Indicator
 
 class IndicatorDb
   constructor: (@indicators) ->
@@ -25,4 +25,4 @@ class IndicatorDb
 
     key? && @indicators[key] || text_indicator
 
-window.OpenCensus.models.IndicatorDb = IndicatorDb
+window.CensusFile.models.IndicatorDb = IndicatorDb

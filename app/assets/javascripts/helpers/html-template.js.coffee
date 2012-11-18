@@ -21,4 +21,4 @@ class HtmlTemplate
 
       $elems.attr(attrs)
 
-window.OpenCensus.helpers.HtmlTemplate = HtmlTemplate
+window.CensusFile.helpers.HtmlTemplate = HtmlTemplate
