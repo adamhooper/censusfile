@@ -1,4 +1,4 @@
-Opencensus::Application.configure do
+CensusFile::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # In the development environment your application's code is reloaded on
@@ -27,4 +27,6 @@ Opencensus::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  config.tiles_url_pattern = '/tiles/{Z}/{X}/{Y}.geojson'
 end

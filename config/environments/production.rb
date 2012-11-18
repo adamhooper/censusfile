@@ -1,4 +1,4 @@
-Opencensus::Application.configure do
+CensusFile::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # Code is not reloaded between requests
@@ -10,8 +10,6 @@ Opencensus::Application.configure do
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
   #config.serve_static_assets = false
-  config.serve_static_assets = true
-  config.assets.prefix = '/files/censusfile/assets'
 
   # Compress JavaScripts and CSS
   config.assets.compress = true
@@ -59,4 +57,6 @@ Opencensus::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  config.tiles_url_pattern = '/tiles/{Z}/{X}/{Y}.geojson'
 end

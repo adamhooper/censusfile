@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Opencensus::Application.load_tasks
+CensusFile::Application.load_tasks
