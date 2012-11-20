@@ -80,6 +80,6 @@ point_controller = (location_view) ->
     set_point(state.point1)
 
 $ ->
-  $location_form = $('#opencensus-wrapper form.location')
-  location_view = new LocationView($location_form[0])
-  point_controller(location_view)
+  #$location_form = $('#opencensus-wrapper form.location')
+  #location_view = new LocationView($location_form[0])
+  #point_controller(location_view)
