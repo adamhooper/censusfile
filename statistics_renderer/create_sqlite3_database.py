@@ -28,6 +28,7 @@ class DbRegionWithStatistics:
                 'f': ('2011', 'population', 'by-age', 'female'),
                 't': ('2011', 'population', 'by-age', 'total')
             },
+            'ma': ('2011', 'population', 'median-age'),
             'dw': ('2011', 'dwellings', 'total'),
             's': [
                 ('2011', 'population-15-and-over', 'by-marital-status', 'single'),

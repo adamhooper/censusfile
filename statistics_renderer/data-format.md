@@ -76,6 +76,7 @@ For anything other than a Dissemination Area, we will send all this:
                 "f": [ 0, 1, 2, 3, ... ], /* female by age: 0-4, 5-9, etc. */
                 "t": [ 0, 1, 2, 3, ... ], /* people by age: 0-4, 5-9, etc. */
             },
+            "ma": 32.2, /* median age */
             "d": 1234, /* density - derived */
             "dw": 1000, /* number of dwellings */
             "mtv": [ en, fr, ot, en+fr, en+ot, fr+ot, en+fr+ot ], /* mother-tongue info for a Venn diagram */
