@@ -80,8 +80,8 @@ For anything other than a Dissemination Area, we will send all this:
             "d": 1234, /* density - derived */
             "dw": 1000, /* number of dwellings */
             "mtv": [ en, fr, ot, en+fr, en+ot, fr+ot, en+fr+ot ], /* mother-tongue info for a Venn diagram */
-            "mt": { "en": 1200, "fr": 30, ... }, /* sparse array of mother tongues */
-            "lh": { "en": 1200, "fr": 30, ... }, /* sparse array of language spoken at home */
+            "mt": "T1230en1200fr30..." }, /* sparse array of mother tongues */
+            "lh": "T1230en1200fr30..." }, /* sparse array of language spoken at home */
             "lm": 23.1, /* official language minority (percentage) */
             "f": 600, /* number of Census Families */
             "pf": 3.3, /* people per family */
@@ -105,6 +105,7 @@ Remarks:
 * `2011.s`: Statistics Canada *presents* census data the way questions were asked. 
 * `2011.dt`: Dwelling types are: Single-detached house, Apartment in building that has five or more storeys, Movable dwelling, Other dwelling, Semi-detached house, Row house, Duplex, Apartment in building that has fewer than five storeys, Other single-attached house
 * `z`: We can optimize the client-side map by telling it when it can skip rendering a region. It can skip rendering a region when children are visible--in other words, when the client-side zoom level is greater than or equal to `z`.
+* `2011.mt`: The sparse-array format is to speed up client-side parsing. It also saves space. The format is simple: letters are a language code, and numbers are the number of people corresponding to that code. The special code `T` means "all respondents", and the special code `?` means "other".
 
 ## Arbitrary Regions - "master"
 
@@ -137,11 +138,13 @@ To arrive at the "web" representation, we store this in our database:
                     "?": 10
                 },
                 "by-mother-tongue": {
+                    "T": 1230,
                     "en": 1200,
                     "fr": 30,
                     ...
                 },
                 "by-language-spoken-at-home": {
+                    "T": 1230,
                     "en": 1200,
                     "fr": 30,
                     ...
