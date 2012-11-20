@@ -124,10 +124,17 @@ To arrive at the "web" representation, we store this in our database:
                     "female": [ 0, 1, 2, 3, ... ],
                     "total": [ 0, 1, 2, 3, ... ]
                 },
-                "by-official-mother-tongue": {
+                "by-official-language-knowledge": {
                     "en": 1200,
                     "fr": 30,
-                    ... /* "*" (other), "en+fr", "en+*", etc. */
+                    "en+fr": 30,
+                    "?": 10
+                },
+                "by-first-official-language": {
+                    "en": 1200,
+                    "fr": 30,
+                    "en+fr": 30,
+                    "?": 10
                 },
                 "by-mother-tongue": {
                     "en": 1200,
@@ -139,7 +146,8 @@ To arrive at the "web" representation, we store this in our database:
                     "fr": 30,
                     ...
                 },
-                "official-language-minority": 23.1, /* percentage */
+                "official-language-minority-number": 123, /* number */
+                "official-language-minority": 23.1 /* percentage */
             },
             "population-15-and-over": {
                 "total": 900,

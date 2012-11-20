@@ -14,7 +14,26 @@ from zipfile import ZipFile as _ZipFile
 
 import stats_db
 
-_age_groups = ['0 to 4 years', '5 to 9 years', '10 to 14 years', '15 to 19 years', '20 to 24 years', '25 to 29 years', '30 to 34 years', '35 to 39 years', '40 to 44 years', '45 to 49 years', '50 to 54 years', '55 to 59 years', '60 to 64 years', '65 to 69 years', '70 to 74 years', '75 to 79 years', '80 to 84 years', '85 years and over']
+_age_groups = [
+    '0 to 4 years',
+    '5 to 9 years',
+    '10 to 14 years',
+    '15 to 19 years',
+    '20 to 24 years',
+    '25 to 29 years',
+    '30 to 34 years',
+    '35 to 39 years',
+    '40 to 44 years',
+    '45 to 49 years',
+    '50 to 54 years',
+    '55 to 59 years',
+    '60 to 64 years',
+    '65 to 69 years',
+    '70 to 74 years',
+    '75 to 79 years',
+    '80 to 84 years',
+    '85 years and over'
+]
 _age_group_keys = [ '   %s' % age_group for age_group in _age_groups ]
 _age_group_keyset = set(_age_group_keys)
 
@@ -37,6 +56,135 @@ _parents = [
 ]
 _parents_key_to_real_key = dict(('      ' + p[1], p[0]) for p in _parents)
 _parent_keyset = set(_parents_key_to_real_key.keys())
+
+_topics = {
+    'Detailed mother tongue': '2011.population.by-mother-tongue',
+    'Detailed language spoken most often at home': '2011.population.by-language-spoken-at-home',
+    'Knowledge of official languages': '2011.population.by-official-language-knowledge',
+    'First official language spoken': '2011.population.by-first-official-language'
+}
+
+_languages = {
+    # We play fast-and-loose with standards, to save space.
+    #
+    # To find a language from its code:
+    # 1. Check ISO-639-1
+    # 2. Check ISO-639-3
+    # 3. Check ISO-639-2
+    # 4. Check this file, because we made something up (these are all-caps and "?")
+    #
+    # "n.i.e.": "not included elsewhere"
+    # "n.o.s.": "not otherwise specified"
+    'French': 'fr',
+    'English': 'en',
+    'English only': 'en',
+    'French only': 'fr',
+    'Other languages': '?',
+    'English and French': 'en+fr',
+    'English and non-official language': 'en+?',
+    'French and non-official language': 'fr+?',
+    'English, French and non-official language': 'en+fr+?',
+    'Neither English nor French': '?',
+
+    'Atikamekw': 'atj',
+    'Cree, n.o.s.': 'cr',
+    'Dene': 'nv',
+    'Innu/Montagnais': 'moe',
+    'Inuktitut': 'iu',
+    'Mi\'kmaq': 'mic',
+    'Ojibway': 'oj',
+    'Oji-Cree': 'ojs',
+    'Stoney': 'sto',
+    'African languages, n.i.e.': 'AF',
+    'Afrikaans': 'af',
+    'Akan (Twi)': 'ak',
+    'Albanian': 'sq',
+    'Amharic': 'am',
+    'Arabic': 'ar',
+    'Armenian': 'hy',
+    'Bantu languages, n.i.e.': 'bnt',
+    'Bengali': 'bn',
+    'Berber languages (Kabyle)': 'ber',
+    'Bisayan languages': 'BI',
+    'Bosnian': 'bs',
+    'Bulgarian': 'bg',
+    'Burmese': 'my',
+    'Cantonese': 'yue',
+    'Chinese, n.o.s.': 'zh',
+    'Creoles': 'CR',
+    'Croatian': 'hr',
+    'Czech': 'cs',
+    'Danish': 'da',
+    'Dutch': 'nl',
+    'Estonian': 'et',
+    'Finnish': 'fi',
+    'Flemish': 'vls',
+    'Fukien': 'MIN',
+    'German': 'de',
+    'Greek': 'el',
+    'Gujarati': 'gu',
+    'Hakka': 'hak',
+    'Hebrew': 'he',
+    'Hindi': 'hi',
+    'Hungarian': 'hu',
+    'Ilocano': 'ilo',
+    'Indo-Iranian languages, n.i.e.': 'iir',
+    'Italian': 'it',
+    'Japanese': 'ja',
+    'Khmer (Cambodian)': 'km',
+    'Korean': 'ko',
+    'Kurdish': 'ku',
+    'Lao': 'lo',
+    'Latvian': 'lv',
+    'Lingala': 'ln',
+    'Lithuanian': 'lt',
+    'Macedonian': 'mk',
+    'Malay': 'ms',
+    'Malayalam': 'ml',
+    'Maltese': 'mt',
+    'Mandarin': 'cmn',
+    'Marathi': 'mr',
+    'Nepali': 'ne',
+    'Niger-Congo languages, n.i.e.': 'nic',
+    'Norwegian': 'no',
+    'Oromo': 'om',
+    'Panjabi (Punjabi)': 'pa',
+    'Pashto': 'ps',
+    'Persian (Farsi)': 'fa',
+    'Polish': 'pl',
+    'Portuguese': 'pt',
+    'Romanian': 'ro',
+    'Rundi (Kirundi)': 'rn',
+    'Russian': 'ru',
+    'Rwanda (Kinyarwanda)': 'rw',
+    'Semitic languages, n.i.e.': 'sem',
+    'Serbian': 'sr',
+    'Serbo-Croatian': 'hbs',
+    'Shanghainese': 'wuu-sha',
+    'Sign languages, n.i.e.': 'SI',
+    'Sindhi': 'sd',
+    'Sinhala (Sinhalese)': 'si',
+    'Sino-Tibetan languages, n.i.e.': 'bo',
+    'Slavic languages, n.i.e.': 'sla',
+    'Slovak': 'sk',
+    'Slovenian': 'sl',
+    'Somali': 'so',
+    'Spanish': 'es',
+    'Swahili': 'sw',
+    'Swedish': 'sv',
+    'Tagalog (Pilipino, Filipino)': 'tl',
+    'Taiwanese': 'nan',
+    'Tamil': 'ta',
+    'Telugu': 'te',
+    'Thai': 'th',
+    'Tibetan languages': 'TI',
+    'Tigrigna': 'ti',
+    'Turkish': 'tr',
+    'Ukrainian': 'uk',
+    'Urdu': 'ur',
+    'Vietnamese': 'vi',
+    'Yiddish': 'yi'
+}
 
 class Region:
     def __init__(self, region_id):
@@ -65,6 +213,12 @@ class Region:
         self.values[key] = value
         if note is not None:
             self.notes[key] = note
+
+    def add_topic_and_language(self, topic, language, value, note):
+        key = topic + '.' + language
+        self.values[key] = value
+        if note is not None:
+            self.notes[topic] = note
 
     def add_by_age(self, key, value, value_m, value_f, note):
         if key in _age_group_keyset:
@@ -156,7 +310,9 @@ class RegionProfileCsvImporter:
         'Total number of census families in private households': '2011.families.total',
         'Total children in census families in private households': '2011.families.children-at-home',
         'Average number of children at home per census families': '2011.families.children-at-home-per-family',
-        'Average number of persons per census family': '2011.families.people-per-family'
+        'Average number of persons per census family': '2011.families.people-per-family',
+        'Official language minority (number)': '2011.population.official-language-minority-number',
+        'Official language minority (percentage)': '2011.population.official-language-minority'
     }
 
     def __init__(self, collection, region_type, csv_file):
@@ -181,6 +337,9 @@ class RegionProfileCsvImporter:
             self.characteristic_index = fieldnames.index('Characteristic')
         else:
             self.characteristic_index = fieldnames.index('Characteristics')
+
+        if 'Topic' in fieldnames:
+            self.topic_index = fieldnames.index('Topic')
 
         self.note_index = fieldnames.index('Note')
         self.value_index = fieldnames.index('Total')
@@ -239,6 +398,14 @@ class RegionProfileCsvImporter:
             region.add_by_marital_status(characteristic, value, note)
         elif characteristic in _parent_keyset:
             region.add_by_parents(characteristic, value, note)
+        elif hasattr(self, 'topic_index'):
+            topic = csv_row[self.topic_index]
+            if topic in _topics:
+                real_topic = _topics[topic]
+                stripped = characteristic.strip()
+                if stripped in _languages:
+                    real_language = _languages[stripped]
+                    region.add_topic_and_language(real_topic, real_language, value, note)
 
     def import_all(self):
         for row in self.csv:
