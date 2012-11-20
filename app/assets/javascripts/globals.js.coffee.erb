@@ -3,59 +3,21 @@
 #= require app
 #= require models/region-type-db
 #= require models/indicator-db
+#= require models/section-db
 #= require models/region-store
 
 $ = jQuery
 
 models = window.CensusFile.models
 
-sum = (array) ->
-  ret = 0
-  ret += val for val in array
-  ret
-
 region_types = new models.RegionTypeDb(<%= RegionType.order(:position).map{|rt| { name: rt.name, description: rt.name } }.to_json %>)
-indicators = new models.IndicatorDb({
-  population: new models.Indicator({
-    name: 'Population'
-    value_function: (statistics) -> statistics['2011']?.p
-  })
-  growth: new models.Indicator({
-    name: 'Growth'
-    unit: '%'
-    value_function: (statistics) -> statistics['2011']?.g
-    buckets: [{"max":-5,"color":"#d7191c","label":"shrank over 5%"},{"max":0,"color":"#fdae61","label":"shrank"},{"max":4.9999,"color":"#ffffbf","label":"grew under 5%"},{"max":9.9999,"color":"#a6d96a","label":"grew under 10%"},{"color":"#1a9641","label":"grew at least 10%"}]
-  })
-  population_density: new models.Indicator({
-    name: 'Population density'
-    unit: 'people per km²'
-    value_function: (statistics) -> statistics['2011']?.d
-    buckets: [{"max":5,"color":"#edf8fb","label":"up to 5 people per km²"},{"max":25,"color":"#b3cde3"},{"max":200,"color":"#8c96c6"},{"max":1000,"color":"#8856a7"},{"color":"#810f7c"}]
-  })
-  fraction_male: new models.Indicator({
-    name: 'Sexes'
-    unit: '%'
-    value_function: (statistics) ->
-      all_m = statistics['2011']?.a?.m
-      all_t = statistics['2011']?.a?.t
-
-      m = sum(all_m || [])
-      t = sum(all_t || [])
-
-      t && m / t || undefined
-    buckets: [{"max":46.99999,"color":"#d7191c","label":"over 53% female"},{"max":48.99999,"color":"#fdae61","label":"over 51% female"},{"max":51,"color":"#ffffbf","label":"about even"},{"max":53,"color":"#abd9e9","label":"over 51% male"},{"color":"#2c7bb6","label":"over 53% male"}]
-  })
-  ages: new models.Indicator({
-    name: 'Ages'
-    value_function: (statistics) ->
-      statistics['2011']?.a
-  })
-})
+indicators = new models.IndicatorDb()
+sections = new models.SectionDb(indicators)
 region_store = new models.RegionStore(region_types)
 
 window.CensusFile.globals = {
   defaults: {
-    indicator_key: 'population',
+    indicator_key: 'population-density',
     position: {
       latitude: 56.4,
       longitude: -94.9
@@ -86,6 +48,7 @@ window.CensusFile.globals = {
   json_tile_url: <%= CensusFile::Application.config.tiles_url_pattern.to_json %>
   region_types: region_types
   indicators: indicators
+  sections: sections
   region_store: region_store
   min_zoom: 3,
   max_zoom: 15

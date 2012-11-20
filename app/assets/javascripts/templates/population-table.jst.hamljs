@@ -11,15 +11,15 @@
     %tr
       %td.region
       %td.compare-region
-  %tbody.growth
+  %tbody.text-growth
     %tr
       %td.region
       %td.compare-region
-  %thead.sub.fraction_male
+  %thead.sub.text-fraction-male
     %tr
       %th.region Sexes
       %th.compare-region/
-  %tbody.fraction_male
+  %tbody.text-fraction-male
     %tr
       %td.region
       %td.compare-region

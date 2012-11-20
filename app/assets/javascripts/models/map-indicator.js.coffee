@@ -1,13 +1,7 @@
 #= require app
 
-$ = jQuery
-
-class Indicator
-  constructor: (attributes) ->
-    @name = attributes.name
-    @unit = attributes.unit || ''
-    @value_function = attributes.value_function
-    @buckets = attributes.buckets
+class MapIndicator
+  constructor: (@key, @name, @buckets, @value_function) ->
 
   valueForStatistics: (statistics) ->
     statistics && @value_function(statistics)
@@ -21,4 +15,4 @@ class Indicator
     value = this.valueForStatistics(statistics)
     this.bucketForValue(value)
 
-window.CensusFile.models.Indicator = Indicator
+window.CensusFile.models.MapIndicator = MapIndicator

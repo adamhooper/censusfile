@@ -71,7 +71,7 @@ class MapTile
     @regions = {} # json_id => { region: region, geometry: GeoJSON geometry, element: Paper element }
     @regionIds = [] # json IDs, used to sort @regions
     @overlayElements = {}
-    @mapIndicator = globals.indicators.findMapIndicatorForTextIndicator(state.indicator)
+    @indicator = state.indicator
 
     childDiv = div.ownerDocument.createElement('div')
     childDiv.style.position = 'absolute'
@@ -163,13 +163,13 @@ class MapTile
           this.drawPolygon(paper, geometry.coordinates, style)
 
   getRegionShouldBeVisible: (region) ->
-    datum = region.getDatum(@mapIndicator)
+    datum = region.getDatum(@indicator)
     return false if !datum?.value?
     return false if datum.z <= @zoom
-    return @mapIndicator.bucketForValue(datum.value) && true || false
+    return @indicator.bucketForValue(datum.value) && true || false
 
   getFillForRegion: (region) ->
-    bucket = region.getBucket(@mapIndicator)
+    bucket = region.getBucket(@indicator)
     bucket?.color
 
   handleData: (data) ->
@@ -286,7 +286,7 @@ class MapTile
     [ column, row ] = tilePixel
 
     return undefined unless @interaction_grids?
-    @interaction_grids.pointToRegionList(column, row, @mapIndicator)
+    @interaction_grids.pointToRegionList(column, row, @indicator)
 
   _refreshOpacity: () ->
     hovering = state.isHoveringOverMap()
@@ -313,7 +313,7 @@ class MapTile
       region_list = this.tilePixelToRegionList(tilePixel) # may be undefined
       if region_list?
         for region in region_list
-          if region.getDatum(@mapIndicator)?.value?
+          if region.getDatum(@indicator)?.value?
             hover_region = region
             break
 
@@ -360,7 +360,7 @@ class MapTile
     this._setOverlayElement('region2', region2)
 
   onIndicatorChanged: (indicator) ->
-    @mapIndicator = globals.indicators.findMapIndicatorForTextIndicator(indicator)
+    @indicator = indicator
     this.restyle()
 
   _onPointNChanged: (n, point) ->
@@ -384,10 +384,10 @@ class MapTile
         ## as parent of a Division when they're actually the same exact area.
         ## This can introduce error if, say, a Subdivision and an ElectoralDistrict happen
         ## to have the same population. Oh well.
-        #if region1? && state.region2? && region.getDatum(@mapIndicator)? && region.statistics?.pop?.value != region1.statistics?.pop?.value
+        #if region1? && state.region2? && region.getDatum(@indicator)? && region.statistics?.pop?.value != region1.statistics?.pop?.value
         #  region2 = region
         #  break
-        if region.getDatum(@mapIndicator)?.value?
+        if region.getDatum(@indicator)?.value?
           new_region = region
           break
 

@@ -10,33 +10,22 @@ state = window.CensusFile.state
 h = window.CensusFile.helpers
 
 class LegendView
-  constructor: (@div) ->
-    state.onIndicatorChanged('legend-view', this.onIndicatorChanged, this)
-    this.refresh()
+  constructor: (@indicator) ->
 
-  onIndicatorChanged: (indicator) ->
-    this.refresh()
-
-  refresh: () ->
-    indicator = state.indicator
-    mapIndicator = globals.indicators.findMapIndicatorForTextIndicator(indicator)
-
+  appendFragmentToContainer: ($container) ->
     $div = $(@div)
     $div.empty()
 
-    $ul = $('<ul class="swatches"></ul>')
-    for bucket in mapIndicator.buckets
+    $ul = $('<ul class="buckets"></ul>')
+    for bucket in @indicator.buckets
       label = h.bucket_to_label(bucket)
 
       $li = $('<li><span class="swatch">&nbsp;</span><span class="label"></span></li>')
       $li.find('.swatch').css('background', bucket.color)
-
       $li.find('.label').text(label)
 
       $ul.append($li)
 
-    $div.append($ul)
+    $container.append($ul)
 
-$ ->
-  $div = $('#opencensus-wrapper>div.legend')
-  new LegendView($div[0])
+window.CensusFile.views.LegendView = LegendView

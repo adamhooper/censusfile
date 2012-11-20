@@ -7,9 +7,7 @@ globals = window.CensusFile.globals
 defaults = globals.defaults
 
 # State variables:
-# * indicator: the Indicator (object) we're dealing with. (For instance, the
-#   'pop' indicator is set in State we're showing the 'popdens' number on the
-#   map.)
+# * indicator: the Indicator (object) we're showing on the map.
 # * point1: A { world_xy: [x,y], latlng: { longitude, latitude }}
 #   object that is the focus of everything
 # * region_list1: A list of all Regions underneath the point. If the point
@@ -27,7 +25,7 @@ defaults = globals.defaults
 # * map_bounds: edges of the map (used as a geocoding hint)
 class State
   constructor: ->
-    @indicator = globals.indicators.findByKey(defaults.indicator_key)
+    @indicator = globals.indicators.lookup(defaults.indicator_key)
     @point1 = undefined
     @region1 = undefined
     @region_list1 = undefined
@@ -39,8 +37,10 @@ class State
     @map_bounds = undefined
 
   setIndicator: (indicator) ->
-    indicator = globals.indicators.findByKey(indicator) if typeof(indicator) == 'String'
-    return if indicator?.key == @indicator?.key
+    if typeof(indicator) == 'string'
+      indicator = globals.indicators.lookup(indicator)
+    return if !indicator?
+    return if indicator.key == @indicator.key
     @indicator = indicator
     $(document).trigger('opencensus:state:indicator_changed', @indicator)
 

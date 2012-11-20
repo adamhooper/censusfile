@@ -14,6 +14,7 @@ globals = window.CensusFile.globals
 AgeGraphView = window.CensusFile.views.AgeGraphView
 RegionSelectorFromRegionList = window.CensusFile.views.RegionSelectorFromRegionList
 
+
 class RegionInfoView
   constructor: (@div) ->
     $(@div).append(JST['templates/population-table']())
@@ -26,16 +27,19 @@ class RegionInfoView
     $regionCompareTh.append('<div></div>')
     new RegionSelectorFromRegionList($regionCompareTh.find('div'), 2)
 
-    this.refresh()
     state.onRegion1Changed 'region-info-view', () => this.refresh()
     state.onRegion2Changed 'region-info-view', () => this.refresh()
+    state.onIndicatorChanged 'region-info-view', () => this.refresh()
+
+    this.refresh()
 
   refresh: () ->
     region1 = state.region1
     region2 = state.region2
+    section = globals.sections.lookupFromIndicator(state.indicator)
 
-    region1Data = this.regionToData(region1)
-    region2Data = this.regionToData(region2)
+    region1Data = this.regionToData(region1, section)
+    region2Data = this.regionToData(region2, section)
 
     indicators = this.visibleIndicators(region1Data, region2Data)
 
@@ -66,16 +70,16 @@ class RegionInfoView
         normalized_value = 0.1
       bar_width = normalized_value * 100 # max: 100px
       "<div class=\"population\"><span class=\"bar\" width=\"#{bar_width}px\" /> <span class=\"value\">#{h.format_integer(datum.value)}</span></div>"
-    growth: (datum, normalized_value) ->
+    'text-growth': (datum, normalized_value) ->
       if datum.value?
         s = h.format_float(datum.value)
         positive = s.charAt(0) != '-'
         s = "+#{s}" if positive
         "<div class=\"growth\"><span class=\"value #{positive && 'positive' || 'negative'}\">#{s}</span><span class=\"unit\">%</span></div>" # not HTML-safe
-    fraction_male: (datum, normalized_value) ->
+    'text-fraction-male': (datum, normalized_value) ->
       if datum.value?
-        f = 100 * datum.value
-        m = 100 - f
+        m = 100 * datum.value
+        f = 100 - m
 
         """
           <div class=\"sex-f\"><span class=\"value\">#{h.format_float(f)}</span><span class=\"unit\">%</span></div>
@@ -83,7 +87,8 @@ class RegionInfoView
         """
     ages: (datum, normalized_value) ->
       new AgeGraphView(datum.value)
-    population_density: () ->
+    'population-density': () ->
+    'median-age': () ->
   }
 
   appendDatumToContainer: ($container, indicator, datum, normalized_value) ->
@@ -96,9 +101,10 @@ class RegionInfoView
         # output is HTML
         $container.append(output)
 
-  regionToData: (region, indicators) ->
+  regionToData: (region, section) ->
     ret = {}
-    for __, indicator of globals.indicators.indicators
+
+    for indicator in section.text_indicators
       ret[indicator.key] = region?.getDatum(indicator)
 
     ret

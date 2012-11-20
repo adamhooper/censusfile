@@ -8,28 +8,35 @@
       and then return to this page.
 
   .nav
-    %ul.indicators
-      %li.population.selected
-        %a{:href => '#population'} Population
-      %li.growth
-        %a{:href => '#growth'} Growth
+    .sections
+      %ul
+        %li.people.selected
+          %a{:href => '#population-density'} People
+        %li.families
+          %a{:href => '#marital-status:married'} Families
+        %li.languages
+          %a{:href => '#mother-tongue:english-v-french'} Languages
+        %li.dwellings
+          %a{:href => '#dwellings'} Dwellings
 
-  %form.location
-    %p.startup-content Enter an address to find census data around it:
-    %p
-      %label{:for => 'opencensus-address-input'} Location
-      %input.text#opencensus-address-input{:type => 'text', :name => 'q', :placeholder => '99 Atlantic Ave., Toronto'}
-      %input.submit{:type => 'submit', :value => 'Go'}
-    %div.status
-    %p.startup-content
-      %a.skip{:href => '#'} or click here to enjoy the map
+  -#
+    %form.location
+      %p.startup-content Enter an address to find census data around it:
+      %p
+        %label{:for => 'opencensus-address-input'} Location
+        %input.text#opencensus-address-input{:type => 'text', :name => 'q', :placeholder => '99 Atlantic Ave., Toronto'}
+        %input.submit{:type => 'submit', :value => 'Go'}
+      %div.status
+      %p.startup-content
+        %a.skip{:href => '#'} or click here to enjoy the map
 
-  .map-and-info
-    .map
-    .region-info
-      .compare-prompt
-        %a{:href => '#'}
-          %span.click Click
-          to compare
-      .region-info-view
-  .legend
+  .section
+
+  .map
+
+  .region-info
+    .compare-prompt
+      %a{:href => '#'}
+        %span.click Click
+        to compare
+    .region-info-view
