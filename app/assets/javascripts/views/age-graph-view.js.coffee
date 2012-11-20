@@ -6,13 +6,8 @@ $ = jQuery
 
 h = window.CensusFile.helpers
 
-id_counter = 0
-
 class AgeGraphView
   constructor: (@data) ->
-
-  _getNextDivId: () ->
-    "opencensus-age-graph-view-#{id_counter += 1}"
 
   appendFragmentToContainer: ($container) ->
     return undefined if !@data?.t?
