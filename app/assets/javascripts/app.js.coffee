@@ -1,5 +1,3 @@
-$ = jQuery
-
 window.CensusFile = {
   helpers: {},
   views: {},
