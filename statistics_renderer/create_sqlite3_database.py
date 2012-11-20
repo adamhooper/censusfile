@@ -13,7 +13,6 @@ import zlib
 import db
 import stats_db
 
-source_dsn = 'dbname=opencensus_dev user=opencensus_dev password=opencensus_dev host=localhost'
 SLICE_SIZE = 1000
 
 class DbRegionWithStatistics:
