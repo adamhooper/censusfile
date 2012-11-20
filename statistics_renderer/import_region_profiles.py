@@ -406,6 +406,8 @@ class RegionProfileCsvImporter:
                 if stripped in _languages:
                     real_language = _languages[stripped]
                     region.add_topic_and_language(real_topic, real_language, value, note)
+                elif stripped.startswith(topic):
+                    region.add_topic_and_language(real_topic, 'T', value, note)
 
     def import_all(self):
         for row in self.csv:
