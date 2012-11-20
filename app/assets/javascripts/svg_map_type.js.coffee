@@ -162,15 +162,14 @@ class MapTile
         when 'Polygon'
           this.drawPolygon(paper, geometry.coordinates, style)
 
-  getRegionShouldBeVisible: (region) ->
+  getFillForRegionIfVisible: (region) ->
     datum = region.getDatum(@indicator)
     return false if !datum?.value?
     return false if datum.z <= @zoom
-    return @indicator.bucketForValue(datum.value) && true || false
+    return @indicator.bucketForValue(datum.value)?.color
 
   getFillForRegion: (region) ->
-    bucket = region.getBucket(@indicator)
-    bucket?.color
+    region.getBucket(@indicator)?.color
 
   handleData: (data) ->
     delete this.dataRequest
@@ -228,8 +227,7 @@ class MapTile
 
     for regionId in @regionIds
       regionData = @regions[regionId]
-      visible = this.getRegionShouldBeVisible(regionData.region)
-      fill = visible && this.getFillForRegion(regionData.region)
+      fill = this.getFillForRegionIfVisible(regionData.region)
       style.fill = fill || 'none'
 
       @paper.setStart()
@@ -245,11 +243,9 @@ class MapTile
 
   restyle: () ->
     for regionId, regionData of @regions
-      region = regionData.region
       element = regionData.element
 
-      visible = this.getRegionShouldBeVisible(regionData.region)
-      fill = visible && this.getFillForRegion(region)
+      fill = this.getFillForRegionIfVisible(regionData.region)
       if !fill
         element.hide()
       else
