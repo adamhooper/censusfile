@@ -36,7 +36,10 @@ def main():
     print('Storing bounding boxes. "." = 10,000 regions: ', file=sys.stderr, end='', flush=True)
     i = 0
     for row in c:
-        region = collection.get_region(row[0])
+        region_id = row[0]
+        if region_id.startswith('Country'):
+            region_id = 'Province-01'
+        region = collection.get_region(region_id)
         region.set('bounding-box', row[1:5])
         region.save()
         i += 1
