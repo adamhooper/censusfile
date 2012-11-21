@@ -7,6 +7,7 @@ $ = jQuery
 
 state = window.CensusFile.state
 MapView = window.CensusFile.views.MapView
+zoom_controller = window.CensusFile.controllers.zoom_controller
 
 # Calls state.setPoint()
 map_controller = (map_view) ->
@@ -51,3 +52,4 @@ $ ->
   $div = $('#opencensus-wrapper div.map')
   map_view = new MapView($div[0])
   map_controller(map_view)
+  zoom_controller(map_view)
