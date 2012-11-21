@@ -220,7 +220,7 @@ body {
 
   .region-info {
     position: absolute;
-    width: (2 * $width_region_info);
+    width: $width_region_info;
     height: $height_info;
     background: $color_alt_background;
     left: $width_map;
@@ -230,6 +230,7 @@ body {
 
   .region-info-view {
     font-size: 16px;
+    width: 2 * $width_region_info;
 
     h3 {
       margin: 10px;
@@ -316,6 +317,7 @@ body {
   }
 
   .region-selector {
+    width: 2 * $width_region_info;
     height: $height_legend;
 
     .wrapper {
@@ -375,6 +377,8 @@ body {
   }
 
   .region-links {
+    width: 2 * $width_region_info;
+
     div {
       // Make this the height of the whole div. That way, when the
       // table is too short we still get the "compare" color all the way down.
