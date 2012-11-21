@@ -338,9 +338,7 @@ class RegionProfileCsvImporter:
         else:
             self.characteristic_index = fieldnames.index('Characteristics')
 
-        if 'Topic' in fieldnames:
-            self.topic_index = fieldnames.index('Topic')
-
+        self.language_section = ''
         self.note_index = fieldnames.index('Note')
         self.value_index = fieldnames.index('Total')
         self.male_index = fieldnames.index('Male')
@@ -398,16 +396,25 @@ class RegionProfileCsvImporter:
             region.add_by_marital_status(characteristic, value, note)
         elif characteristic in _parent_keyset:
             region.add_by_parents(characteristic, value, note)
-        elif hasattr(self, 'topic_index'):
-            topic = csv_row[self.topic_index]
-            if topic in _topics:
-                real_topic = _topics[topic]
-                stripped = characteristic.strip()
-                if stripped in LANGUAGES:
-                    real_language = LANGUAGES[stripped]
-                    region.add_topic_and_language(real_topic, real_language, value, note)
-                elif stripped.startswith(topic):
-                    region.add_topic_and_language(real_topic, 'T', value, note)
+        elif characteristic.startswith('Knowledge of official languages'):
+            self.language_section = '2011.population.by-official-language-knowledge'
+            region.add_topic_and_language(self.language_section, 'T', value, note)
+        elif characteristic.startswith('First official language spoken'):
+            self.language_section = '2011.population.first-official-language-spoken'
+            region.add_topic_and_language(self.language_section, 'T', value, note)
+        elif characteristic.startswith('Detailed mother tongue'):
+            self.language_section = '2011.population.by-mother-tongue'
+            region.add_topic_and_language(self.language_section, 'T', value, note)
+        elif characteristic.startswith('Detailed language spoken most often at home'):
+            self.language_section = '2011.population.by-language-spoken-at-home'
+            region.add_topic_and_language(self.language_section, 'T', value, note)
+        elif characteristic.startswith('Detailed other language spoken regularly at home'):
+            self.language_section = None
+        elif self.language_section is not None:
+            stripped = characteristic.strip()
+            if stripped in LANGUAGES:
+                real_language = LANGUAGES[stripped]
+                region.add_topic_and_language(self.language_section, real_language, value, note)
 
     def import_all(self):
         for row in self.csv:
