@@ -52,7 +52,7 @@ class SectionView
 
   _setFocus: (indicator) ->
     $headings = $('.headings li', @div)
-    $heading = $headings.filter("[data-indicator-key=#{indicator.key}]")
+    $heading = $headings.filter("[data-indicator-key=\"#{indicator.key}\"]")
     $headings.removeClass('selected')
     $heading.addClass('selected')
 
@@ -70,7 +70,7 @@ class SectionView
 
     # Scroll to legend
     $legends = $('.legends', @div)
-    $legend = $legends.children("[data-indicator-key=#{indicator.key}]")
+    $legend = $legends.children("[data-indicator-key=\"#{indicator.key}\"]")
     left = $legend.position().left
     $legends.animate({ left: -left })
 
