@@ -43,6 +43,8 @@ class DbRegionWithStatistics:
             'dw': ('2011', 'dwellings', 'total'),
             'ol': ('2011', 'population', 'by-official-language-knowledge', encode_official_language_array),
             'lh': ('2011', 'population', 'by-language-spoken-at-home', encode_sparse_language_array),
+            'ln': ('2011', 'population', 'official-language-minority-number'),
+            'lm': ('2011', 'population', 'official-language-minority'),
             'f': ('2011', 'families', 'total'),
             'pf': ('2011', 'families', 'people-per-family'),
             'cf': ('2011', 'families', 'children-at-home-per-family'),
