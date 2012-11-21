@@ -309,7 +309,7 @@ class RegionProfileCsvImporter:
         'Total population 15 years and over by marital status': '2011.population-15-and-over.total',
         'Total number of census families in private households': '2011.families.total',
         'Total children in census families in private households': '2011.families.children-at-home',
-        'Average number of children at home per census families': '2011.families.children-at-home-per-family',
+        'Average number of children at home per census family': '2011.families.children-at-home-per-family',
         'Average number of persons per census family': '2011.families.people-per-family',
         'Official language minority (number)': '2011.population.official-language-minority-number',
         'Official language minority (percentage)': '2011.population.official-language-minority'
