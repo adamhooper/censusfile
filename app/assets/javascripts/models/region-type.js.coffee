@@ -26,6 +26,7 @@ url_types = {
   EconomicRegion: 'ER',
   Province: 'PR',
   Country: 'PR'
+  DisseminationArea: 'DA'
 }
 
 class RegionType
