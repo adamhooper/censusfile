@@ -1,11 +1,11 @@
-== Attribution
+## Attribution
 
 The data files in this directory were all created by Statistics Canada, and
 they are all shared here under the Statistics Canada Open License Agreement.
 
 The terms: http://www.statcan.gc.ca/reference/licence-eng.html
 
-== region-profiles/
+## region-profiles/
 
 We start with a profile of each region (except for dissemination blocks). These
 profiles don't have *all* information, but they are easier to interpret than
@@ -28,7 +28,7 @@ Files needed:
 
 Leave them as zip files.
 
-== dissemination-blocks/
+## dissemination-blocks/
 
 Statistics Canada also provides population and dwelling counts down to the
 dissemination block (a very small area indeed). They must be imported
