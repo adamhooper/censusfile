@@ -16,17 +16,17 @@ window.CensusFile.helpers.region_to_human_html = (region) ->
 
   $span = $('<span></span>')
 
-  if region_type_human
-    $region_type_span = $('<span class="region-type"></span>')
-    $region_type_span.text(region_type_human)
-    $span.append($region_type_span)
-
-  if region_type_human? && region_name
-    $span.append(' ')
-
   if region.name
     $region_name_span = $('<span class="region-name"></span>')
     $region_name_span.text(region_name)
     $span.append($region_name_span)
+
+  if region_type_human? && region_name
+    $span.append(' ')
+
+  if region_type_human
+    $region_type_span = $('<span class="region-type"></span>')
+    $region_type_span.text(region_type_human)
+    $span.append($region_type_span)
 
   return $span.html()

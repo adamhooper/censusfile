@@ -16,13 +16,12 @@ class RegionSelectorFromRegionList
     listenerKey = "region-selector-from-region-list-#{@n}"
     onRegionListChanged = "onRegionList#{@n}Changed"
     onRegionChanged = "onRegion#{@n}Changed"
-    state[onRegionListChanged](listenerKey, () => this.refreshList())
-    state[onRegionChanged](listenerKey, () => this.refreshSelected())
+    state[onRegionListChanged](listenerKey, () => this.refresh())
+    state[onRegionChanged](listenerKey, () => this.refresh())
 
-    this.refreshList()
-    this.refreshSelected()
+    this.refresh()
 
-  refreshList: () ->
+  refresh: () ->
     $div = $(@div)
     $div.empty()
 
@@ -30,70 +29,92 @@ class RegionSelectorFromRegionList
     setter = "setRegion#{@n}"
     selected_region = state["region#{@n}"]
 
-    $form = $('<form><select></select></form>')
-    $select = $form.children()
-
-    populations = {}
-
-    if region_list?
-      for region in region_list
-        if region.statistics?.pop?.value?
-          # Ignore parent regions which are duplicates
-          key = "#{region.statistics?.pop?.value || 0}"
-          continue if populations[key]?
-          populations[key] = true
-
-        human_name = region.human_name()
-        $option = $('<option></option>')
-        $option.attr('value', region.id)
-        $option.text(region.id)
-        $option.attr('selected', 'selected') if region.id == selected_region?.id
-        $select.append($option)
-
-    if @n == 2
-      $option = $('<option value="">(stop comparing)</option>')
-      $option.attr('selected', 'selected') if !selected_region?.id
-      $select.append($option)
-
-    $div.append($form)
-    $select.selectmenu({
-      style: 'dropdown',
-      width: $div.width(),
-      maxHeight: 600,
-      appendTo: $form,
-      format: (region_id) ->
-        region = globals.region_store.get(region_id)
-        region && h.region_to_human_html(region) || region_id
-    })
-
-    $select.on 'change', () ->
-      region_id = $select.val()
-      region = globals.region_store.get(region_id)
-      state[setter](region)
-
-    $appended = if region_list?
-      $div.append("<div class=\"prompt\"><a href=\"#\">Zoom here</a> or drag <img src=\"#{@markerImageUrl}\" alt=\"marker\" width=\"9\" height=\"21\" /> to move</div>")
+    $prompt = if region_list?
+      $("<div class=\"prompt\"><a href=\"#\">Zoom here</a> or drag <img src=\"#{@markerImageUrl}\" alt=\"marker\" width=\"9\" height=\"21\" /> to move</div>")
     else
-      $div.append("<div class=\"prompt\">Click the map to drop a <img src=\"#{@markerImageUrl}\" alt=\"marker\" width=\"9\" height=\"21\" /></div>")
-
-    $appended.find('a').on 'click', (e) =>
+      $("<div class=\"prompt\">Click the map to drop a <img src=\"#{@markerImageUrl}\" alt=\"marker\" width=\"9\" height=\"21\" /></div>")
+    $prompt.find('a').on 'click', (e) =>
       e.preventDefault()
       $(document).trigger('opencensus:zoom_region', [ state["region#{@n}"] ])
 
-  refreshSelected: () ->
-    $select = $(@div).find('select')
+    $div.append($prompt)
 
-    region = state["region#{@n}"]
-    other_region = state["region#{3 - @n}"]
+    $selected = $('<div class="selected"></div>')
+    $div.append($selected)
 
-    $select.selectmenu('value', region?.id)
+    if selected_region?
+      $selected.attr('data-region-id', selected_region.id) # makes debugging easier
+      $selected.append(h.region_to_human_html(selected_region))
 
-    if region? && region.id == other_region?.id && @oldValue?
-      otherSetter = "setRegion#{3 - @n}"
-      otherRegion = globals.
-      otherRegion = globals.region_store.get(@oldValue)
-      state[otherSetter](otherRegion)
+    if region_list?
+      populations = {}
+      $ul = $('<ul class="region-select"></ul>')
 
-    @oldValue = region?.id
+      for region in region_list
+        # Ignore parent regions which are duplicates
+        if region.statistics?['2011']?.p?
+          key = region.statistics['2011'].p
+          continue if populations[key]?
+          populations[key] = true
 
-window.CensusFile.views.RegionSelectorFromRegionList = RegionSelectorFromRegionList
+        $li = $('<li></li>')
+        $li.attr('data-region-id', region.id)
+        $li.append(h.region_to_human_html(region))
+        $li.on 'click', (e) ->
+          e.preventDefault()
+          region_id = $(e.currentTarget).attr('data-region-id')
+          r = globals.region_store.get(region_id)
+          state[setter](r)
+
+        $ul.append($li)
+
+      $div.append($ul)
+
+      $selected.append('<b class="caret"></b>')
+      $selected.on('hover', (-> $selected.addClass('hover')), (-> $selected.removeClass('hover')))
+
+      $layer = undefined
+
+      show = () ->
+        $body = $('body')
+        $layer = $('<div></div>').css({
+          position: 'absolute'
+          zIndex: 3
+          top: 0
+          bottom: 0
+          left: 0
+          right: 0
+          background: 'transparent'
+        })
+        $layer.css({ background: 'rgba(255, 255, 255, .3)' })
+        $body.append($layer)
+        $ul.show()
+        ul_offset = $ul.offset()
+        $layer.append($ul)
+        $ul.css({
+          position: 'absolute'
+          left: ul_offset.left
+          top: ul_offset.top
+        })
+        $layer.on('click', hide) # Even selection-clicks will touch the layer
+
+      hide = () ->
+        $div.append($ul)
+        $ul.css({
+          position: 'static'
+        })
+        $ul.hide()
+        $layer.remove()
+
+      $selected.on('click', show)
+
+$ ->
+  $div = $('#opencensus-wrapper div.region-selector')
+  $region1 = $('<div class="wrapper"></div>')
+  $region2 = $('<div class="wrapper"></div>')
+
+  $div.append($region1)
+  $div.append($region2)
+
+  new RegionSelectorFromRegionList($region1, 1)
+  new RegionSelectorFromRegionList($region2, 2)

@@ -1,8 +1,4 @@
 %table
-  %thead.regions
-    %tr
-      %th.region/
-      %th.compare-region/
   %thead.sub.population
     %tr
       %th.region Population
@@ -29,9 +25,5 @@
       %th.compare-region/
   %tbody.ages
     %tr.ages
-      %td.region
-      %td.compare-region
-  %tbody.links
-    %tr
       %td.region
       %td.compare-region

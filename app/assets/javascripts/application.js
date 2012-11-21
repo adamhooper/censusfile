@@ -5,8 +5,5 @@
 // the compiled file.
 //
 //= require jquery
-//= require jquery_ujs
-//= require excanvas
-//= require jqplot-manifest
-//= require jquery-ui-manifest
+//= require underscore
 //= require_tree .

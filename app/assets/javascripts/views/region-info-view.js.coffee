@@ -2,7 +2,6 @@
 #= require state
 #= require helpers/format-numbers
 #= require views/age-graph-view
-#= require views/region-selector-from-region-list
 #= require templates/population-table
 
 $ = jQuery
@@ -12,20 +11,10 @@ state = window.CensusFile.state
 globals = window.CensusFile.globals
 
 AgeGraphView = window.CensusFile.views.AgeGraphView
-RegionSelectorFromRegionList = window.CensusFile.views.RegionSelectorFromRegionList
-
 
 class RegionInfoView
   constructor: (@div) ->
     $(@div).append(JST['templates/population-table']())
-
-    $regionTh = $(@div).find('th.region:eq(0)')
-    $regionTh.append('<div></div>')
-    new RegionSelectorFromRegionList($regionTh.find('div'), 1)
-
-    $regionCompareTh = $(@div).find('th.compare-region:eq(0)')
-    $regionCompareTh.append('<div></div>')
-    new RegionSelectorFromRegionList($regionCompareTh.find('div'), 2)
 
     state.onRegion1Changed 'region-info-view', () => this.refresh()
     state.onRegion2Changed 'region-info-view', () => this.refresh()
@@ -46,23 +35,6 @@ class RegionInfoView
     this.refreshVisibleRows(indicators)
 
     this.fillTableData(indicators, region1Data, region2Data)
-    this.refreshUrls(region1, region2)
-
-  _fillThUrl: ($th, url) ->
-    $th.empty()
-
-    if url
-      $a = $('<a target="_blank" title="opens in new window">Statistics Canada profile</a>')
-      $a.attr('href', url)
-      $th.append($a)
-
-  refreshUrls: (region, compareRegion) ->
-    $tr = $(@div).find('tbody.links tr')
-    $th1 = $tr.find('td.region')
-    $th2 = $tr.find('td.compare-region')
-
-    this._fillThUrl($th1, region?.url())
-    this._fillThUrl($th2, compareRegion?.url())
 
   formatters: {
     population: (datum, normalized_value) ->
@@ -116,7 +88,7 @@ class RegionInfoView
 
   refreshVisibleRows: (visibleIndicators) ->
     $tbodies = $(@div).find('thead, tbody')
-    $tbodies.filter(':not(.regions):not(.links)').hide()
+    $tbodies.hide()
     for key, __ of visibleIndicators
       $tbodies.filter(".#{key}").show()
     undefined
@@ -153,5 +125,5 @@ class RegionInfoView
       undefined
 
 $ ->
-  $div = $('#opencensus-wrapper div.region-info')
+  $div = $('#opencensus-wrapper div.region-info-view')
   new RegionInfoView($div[0])
