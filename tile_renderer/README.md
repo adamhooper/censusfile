@@ -11,29 +11,29 @@ See UTFGrid 1.2 spec (as of 2012-01-11): https://github.com/mapbox/utfgrid-spec/
 
 A tile looks like this:
 
-{
-  "type": "FeatureCollection", /* GeoJSON */
-  "features": [ /* GeoJSON */
     {
-      "type": "Feature",
-      "geometry": ...GeoJSON geometry...
-      "id": "DisseminationArea-12314",
-      "properties": {
-        "uid": "12314",
-        "type": "DisseminationArea",
-        "name": "Statistics Canada-supplied name",
-        "statistics": { ... }
-      }
-    },
-    ...more features...
-  ],
-  "utfgrids": [ /* Not banned by the GeoJSON spec */
-    {
-      "grid": ["...", "...", ... ], /* UTFGrid */
-      "keys": [ "", "Province-11", "ElectoralDistrict-132", ... ] /* UTFGrid */
+      "type": "FeatureCollection", /* GeoJSON */
+      "features": [ /* GeoJSON */
+        {
+          "type": "Feature",
+          "geometry": ...GeoJSON geometry...
+          "id": "DisseminationArea-12314",
+          "properties": {
+            "uid": "12314",
+            "type": "DisseminationArea",
+            "name": "Statistics Canada-supplied name",
+            "statistics": { ... }
+          }
+        },
+        ...more features...
+      ],
+      "utfgrids": [ /* Not banned by the GeoJSON spec */
+        {
+          "grid": ["...", "...", ... ], /* UTFGrid */
+          "keys": [ "", "Province-11", "ElectoralDistrict-132", ... ] /* UTFGrid */
+        }
+      ]
     }
-  ]
-}
 
 The GeoJSON contains all data necessary. UTFGrid data is entirely redundant.
 
@@ -130,14 +130,16 @@ step 2 and split them before step 3.)
 
 Our use case with PostgreSQL is: a few clients (either a single SQL command, or
 a small army of paralellel processes doing the same few queries--ideally one
-per CPU core. Few connections, massive computations. Turn `work_mem` up
-(e.g. `32MB`) and turn `maintenance_work_mem` way up (e.g. `1GB`). Turn off
-`synchronous_commit`: we can restart our processing at any command, and it's very
-slow for lots of commits (which our `work_queue` method uses). Bump
-`checkpoint_segments` up (e.g., to 64) because we do some enormous UPDATEs.
+per CPU core. Few connections, massive computations.
 
-The `work_queue` overhead, in steps 2 and 3 above, comes out to roughly 10-15%,
-which is acceptable.
+* Turn `work_mem` up (e.g. `32MB`)
+* Turn `maintenance_work_mem` way up (e.g. `1GB`).
+* Turn off `synchronous_commit`: we can restart our processing at any command,
+  and it's very slow for lots of commits (which our `work_queue` method uses).
+* Bump `checkpoint_segments` up (e.g., to `64`) because we do some enormous UPDATEs.
+
+The `work_queue` overhead, in steps 2 and 3 above, comes out to roughly 10-15%
+of the total, which is acceptable.
 
 #### Python
 
