@@ -64,7 +64,7 @@ _topics = {
     'First official language spoken': '2011.population.by-first-official-language'
 }
 
-_languages = {
+LANGUAGES = {
     # We play fast-and-loose with standards, to save space.
     #
     # To find a language from its code:
@@ -403,8 +403,8 @@ class RegionProfileCsvImporter:
             if topic in _topics:
                 real_topic = _topics[topic]
                 stripped = characteristic.strip()
-                if stripped in _languages:
-                    real_language = _languages[stripped]
+                if stripped in LANGUAGES:
+                    real_language = LANGUAGES[stripped]
                     region.add_topic_and_language(real_topic, real_language, value, note)
                 elif stripped.startswith(topic):
                     region.add_topic_and_language(real_topic, 'T', value, note)
