@@ -96,6 +96,39 @@ MAP_INDICATORS = {
       { color: '#bd0026', label: '50 and over' }
     ]
   }
+
+  'language:en-v-fr': {
+    name: 'Language spoken at home: English vs French',
+    value_function: (s) ->
+      all = s['2011']?.lh
+
+      if all
+        en = /(?:\b|\d)en(\d+)/.exec(all)?[1]
+        fr = /(?:\b|\d)fr(\d+)/.exec(all)?[1]
+
+        en = if en then parseInt(en, 10) else 0
+        fr = if fr then parseInt(fr, 10) else 0
+
+        fr / en # may be Infinity
+    buckets: [
+      { max: 0.25, color: '#ca0020', label: '4x more English' },
+      { max: 1/1.5, color: '#f4a582', label: '1.5x more' },
+      { max: 1.5, color: '#f7f7f7', label: 'about equal' },
+      { max: 4, color: '#92c5de', label: '1.5x more' },
+      { color: '#0571b0', label: '4x more French' }
+    ]
+  }
+
+  'official-language-minority': {
+    name: 'Official language minority'
+    value_function: (s) -> s['2011']?.lm
+    buckets: [
+      { max: 2, color: '#eff3ff', label: 'less than 2% minority'},
+      { max: 10, color: '#bdd7e7', label: '< 10% minority' },
+      { max: 20, color: '#6baed6', label: '< 20% minority' },
+      { color: '#2171b5', label: 'larger minority' }
+    ]
+  }
 }
 
 class IndicatorDb
@@ -103,7 +136,7 @@ class IndicatorDb
     @indicators = {}
 
   lookup: (key) ->
-    key = key.split(/:/)[0]
+    #key = key.split(/:/)[0]
     @indicators[key] ||= if TEXT_INDICATORS[key]?
       ind = TEXT_INDICATORS[key]
       new TextIndicator(key, ind.name, ind.unit, ind.value_function)
