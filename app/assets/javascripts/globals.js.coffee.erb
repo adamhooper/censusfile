@@ -14,10 +14,118 @@ region_types = new models.RegionTypeDb(<%= RegionType.order(:position).map{|rt| 
 indicators = new models.IndicatorDb()
 sections = new models.SectionDb(indicators)
 region_store = new models.RegionStore(region_types)
+languages = {
+  '?': { name: "Other", mean: 0.79, median: 0.17, mad: 0.09 }
+  'AF': { name: "African languages, n.i.e.", mean: 0.13, median: 0.09, mad: 0.06 }
+  'BI': { name: "Bisayan languages", mean: 0.14, median: 0.10, mad: 0.06 }
+  'CR': { name: "Creoles", mean: 0.43, median: 0.13, mad: 0.10 }
+  'MIN': { name: "Fukien", mean: 0.12, median: 0.08, mad: 0.06 }
+  'SI': { name: "Sign languages, n.i.e.", mean: 0.09, median: 0.05, mad: 0.04 }
+  'T': { name: "Total", mean: 100.00, median: 100.00, mad: 0.00 }
+  'TI': { name: "Tibetan languages", mean: 0.22, median: 0.08, mad: 0.07 }
+  'af': { name: "Afrikaans", mean: 0.12, median: 0.08, mad: 0.05 }
+  'ak': { name: "Akan (Twi)", mean: 0.17, median: 0.09, mad: 0.07 }
+  'am': { name: "Amharic", mean: 0.19, median: 0.11, mad: 0.07 }
+  'ar': { name: "Arabic", mean: 1.06, median: 0.42, mad: 0.31 }
+  'atj': { name: "Atikamekw", mean: 3.50, median: 0.06, mad: 0.06 }
+  'ber': { name: "Berber languages (Kabyle)", mean: 0.17, median: 0.10, mad: 0.09 }
+  'bg': { name: "Bulgarian", mean: 0.17, median: 0.11, mad: 0.06 }
+  'bn': { name: "Bengali", mean: 0.40, median: 0.17, mad: 0.11 }
+  'bnt': { name: "Bantu languages, n.i.e.", mean: 0.09, median: 0.07, mad: 0.06 }
+  'bo': { name: "Sino-Tibetan languages, n.i.e.", mean: 0.19, median: 0.08, mad: 0.07 }
+  'bs': { name: "Bosnian", mean: 0.13, median: 0.10, mad: 0.06 }
+  'cmn': { name: "Mandarin", mean: 1.07, median: 0.30, mad: 0.22 }
+  'cr': { name: "Cree, n.o.s.", mean: 3.98, median: 0.14, mad: 0.13 }
+  'cs': { name: "Czech", mean: 0.15, median: 0.11, mad: 0.05 }
+  'da': { name: "Danish", mean: 0.13, median: 0.09, mad: 0.05 }
+  'de': { name: "German", mean: 1.52, median: 0.52, mad: 0.40 }
+  'el': { name: "Greek", mean: 0.44, median: 0.17, mad: 0.10 }
+  'en': { name: "English", mean: 63.98, median: 80.47, mad: 16.68 }
+  'en+?': { name: "English and other", mean: 1.99, median: 1.09, mad: 0.76 }
+  'en+fr': { name: "English and French", mean: 0.57, median: 0.31, mad: 0.18 }
+  'en+fr+?': { name: "English, French and other", mean: 0.23, median: 0.12, mad: 0.07 }
+  'es': { name: "Spanish", mean: 1.16, median: 0.67, mad: 0.48 }
+  'et': { name: "Estonian", mean: 0.10, median: 0.08, mad: 0.06 }
+  'fa': { name: "Persian (Farsi)", mean: 0.73, median: 0.30, mad: 0.21 }
+  'fi': { name: "Finnish", mean: 0.18, median: 0.09, mad: 0.05 }
+  'fr': { name: "French", mean: 26.75, median: 1.78, mad: 1.45 }
+  'fr+?': { name: "French and other", mean: 0.54, median: 0.16, mad: 0.10 }
+  'gu': { name: "Gujarati", mean: 0.47, median: 0.18, mad: 0.11 }
+  'hak': { name: "Hakka", mean: 0.13, median: 0.09, mad: 0.06 }
+  'hbs': { name: "Serbo-Croatian", mean: 0.11, median: 0.09, mad: 0.06 }
+  'he': { name: "Hebrew", mean: 0.23, median: 0.10, mad: 0.08 }
+  'hi': { name: "Hindi", mean: 0.40, median: 0.19, mad: 0.12 }
+  'hr': { name: "Croatian", mean: 0.24, median: 0.14, mad: 0.07 }
+  'hu': { name: "Hungarian", mean: 0.28, median: 0.17, mad: 0.09 }
+  'hy': { name: "Armenian", mean: 0.31, median: 0.11, mad: 0.07 }
+  'iir': { name: "Indo-Iranian languages, n.i.e.", mean: 0.09, median: 0.07, mad: 0.05 }
+  'ilo': { name: "Ilocano", mean: 0.16, median: 0.10, mad: 0.06 }
+  'it': { name: "Italian", mean: 1.18, median: 0.38, mad: 0.28 }
+  'iu': { name: "Inuktitut", mean: 9.69, median: 0.03, mad: 0.03 }
+  'ja': { name: "Japanese", mean: 0.23, median: 0.13, mad: 0.07 }
+  'km': { name: "Khmer (Cambodian)", mean: 0.20, median: 0.11, mad: 0.07 }
+  'ko': { name: "Korean", mean: 0.62, median: 0.23, mad: 0.14 }
+  'ku': { name: "Kurdish", mean: 0.14, median: 0.10, mad: 0.07 }
+  'ln': { name: "Lingala", mean: 0.09, median: 0.07, mad: 0.06 }
+  'lo': { name: "Lao", mean: 0.15, median: 0.09, mad: 0.06 }
+  'lt': { name: "Lithuanian", mean: 0.10, median: 0.08, mad: 0.06 }
+  'lv': { name: "Latvian", mean: 0.09, median: 0.07, mad: 0.05 }
+  'mic': { name: "Mi'kmaq", mean: 2.38, median: 0.03, mad: 0.03 }
+  'mk': { name: "Macedonian", mean: 0.19, median: 0.11, mad: 0.07 }
+  'ml': { name: "Malayalam", mean: 0.15, median: 0.10, mad: 0.06 }
+  'moe': { name: "Innu/Montagnais", mean: 5.43, median: 0.07, mad: 0.06 }
+  'mr': { name: "Marathi", mean: 0.09, median: 0.08, mad: 0.06 }
+  'ms': { name: "Malay", mean: 0.12, median: 0.09, mad: 0.06 }
+  'mt': { name: "Maltese", mean: 0.10, median: 0.08, mad: 0.06 }
+  'my': { name: "Burmese", mean: 0.09, median: 0.07, mad: 0.06 }
+  'nan': { name: "Taiwanese", mean: 0.16, median: 0.09, mad: 0.07 }
+  'ne': { name: "Nepali", mean: 0.15, median: 0.09, mad: 0.06 }
+  'nic': { name: "Niger-Congo languages, n.i.e.", mean: 0.13, median: 0.09, mad: 0.06 }
+  'nl': { name: "Dutch", mean: 0.41, median: 0.23, mad: 0.15 }
+  'no': { name: "Norwegian", mean: 0.12, median: 0.07, mad: 0.05 }
+  'nv': { name: "Dene", mean: 5.32, median: 0.10, mad: 0.10 }
+  'oj': { name: "Ojibway", mean: 2.18, median: 0.11, mad: 0.10 }
+  'ojs': { name: "Oji-Cree", mean: 2.70, median: 0.13, mad: 0.12 }
+  'om': { name: "Oromo", mean: 0.16, median: 0.09, mad: 0.07 }
+  'pa': { name: "Panjabi (Punjabi)", mean: 1.75, median: 0.30, mad: 0.21 }
+  'pl': { name: "Polish", mean: 0.58, median: 0.32, mad: 0.21 }
+  'ps': { name: "Pashto", mean: 0.17, median: 0.10, mad: 0.07 }
+  'pt': { name: "Portuguese", mean: 0.69, median: 0.27, mad: 0.18 }
+  'rn': { name: "Rundi (Kirundi)", mean: 0.10, median: 0.07, mad: 0.06 }
+  'ro': { name: "Romanian", mean: 0.38, median: 0.20, mad: 0.13 }
+  'ru': { name: "Russian", mean: 0.60, median: 0.26, mad: 0.17 }
+  'rw': { name: "Rwanda (Kinyarwanda)", mean: 0.09, median: 0.07, mad: 0.06 }
+  'sd': { name: "Sindhi", mean: 0.14, median: 0.09, mad: 0.06 }
+  'sem': { name: "Semitic languages, n.i.e.", mean: 0.26, median: 0.11, mad: 0.08 }
+  'si': { name: "Sinhala (Sinhalese)", mean: 0.13, median: 0.10, mad: 0.06 }
+  'sk': { name: "Slovak", mean: 0.12, median: 0.10, mad: 0.05 }
+  'sl': { name: "Slovenian", mean: 0.11, median: 0.09, mad: 0.05 }
+  'sla': { name: "Slavic languages, n.i.e.", mean: 0.07, median: 0.04, mad: 0.03 }
+  'so': { name: "Somali", mean: 0.40, median: 0.14, mad: 0.10 }
+  'sq': { name: "Albanian", mean: 0.21, median: 0.12, mad: 0.08 }
+  'sr': { name: "Serbian", mean: 0.32, median: 0.15, mad: 0.09 }
+  'sto': { name: "Stoney", mean: 2.28, median: 0.07, mad: 0.06 }
+  'sv': { name: "Swedish", mean: 0.10, median: 0.07, mad: 0.05 }
+  'sw': { name: "Swahili", mean: 0.12, median: 0.09, mad: 0.06 }
+  'ta': { name: "Tamil", mean: 0.80, median: 0.18, mad: 0.14 }
+  'te': { name: "Telugu", mean: 0.12, median: 0.09, mad: 0.06 }
+  'th': { name: "Thai", mean: 0.10, median: 0.07, mad: 0.05 }
+  'ti': { name: "Tigrigna", mean: 0.16, median: 0.10, mad: 0.06 }
+  'tl': { name: "Tagalog (Pilipino, Filipino)", mean: 1.09, median: 0.47, mad: 0.36 }
+  'tr': { name: "Turkish", mean: 0.20, median: 0.13, mad: 0.07 }
+  'uk': { name: "Ukrainian", mean: 0.60, median: 0.21, mad: 0.13 }
+  'ur': { name: "Urdu", mean: 0.75, median: 0.26, mad: 0.19 }
+  'vi': { name: "Vietnamese", mean: 0.61, median: 0.26, mad: 0.18 }
+  'vls': { name: "Flemish", mean: 0.09, median: 0.04, mad: 0.03 }
+  'wuu-sha': { name: "Shanghainese", mean: 0.09, median: 0.08, mad: 0.06 }
+  'yi': { name: "Yiddish", mean: 0.60, median: 0.09, mad: 0.09 }
+  'yue': { name: "Cantonese", mean: 1.50, median: 0.32, mad: 0.24 }
+  'zh': { name: "Chinese, n.o.s.", mean: 1.38, median: 0.47, mad: 0.36 }
+}
 
 window.CensusFile.globals = {
   defaults: {
-    indicator_key: 'population-density',
+    indicator_key: 'growth'
     position: {
       latitude: 56.4,
       longitude: -94.9
@@ -49,6 +157,7 @@ window.CensusFile.globals = {
   region_types: region_types
   indicators: indicators
   sections: sections
+  languages: languages
   region_store: region_store
   min_zoom: 3,
   max_zoom: 15

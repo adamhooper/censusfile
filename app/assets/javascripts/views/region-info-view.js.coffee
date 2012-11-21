@@ -1,9 +1,11 @@
+#= require underscore
 #= require app
 #= require state
-#= require helpers/format-numbers
 #= require views/age-graph-view
-#= require templates/population-table
+#= require views/family-parents-graph-view
+#= require views/marital-statuses-graph-view
 
+_ = window._
 $ = jQuery
 
 h = window.CensusFile.helpers
@@ -11,11 +13,11 @@ state = window.CensusFile.state
 globals = window.CensusFile.globals
 
 AgeGraphView = window.CensusFile.views.AgeGraphView
+FamilyParentsGraphView = window.CensusFile.views.FamilyParentsGraphView
+MaritalStatusGraphView = window.CensusFile.views.MaritalStatusGraphView
 
 class RegionInfoView
   constructor: (@div) ->
-    $(@div).append(JST['templates/population-table']())
-
     state.onRegion1Changed 'region-info-view', () => this.refresh()
     state.onRegion2Changed 'region-info-view', () => this.refresh()
     state.onIndicatorChanged 'region-info-view', () => this.refresh()
@@ -23,20 +25,25 @@ class RegionInfoView
     this.refresh()
 
   refresh: () ->
+    $div = $(@div)
+    $div.empty()
+
     region1 = state.region1
     region2 = state.region2
     section = globals.sections.lookupFromIndicator(state.indicator)
 
     region1Data = this.regionToData(region1, section)
     region2Data = this.regionToData(region2, section)
+    data = this.formatRegionData(region1Data, region2Data)
 
-    indicators = this.visibleIndicators(region1Data, region2Data)
+    template = JST["templates/section-#{section.key}"]
 
-    this.refreshVisibleRows(indicators)
+    html = template(data)
 
-    this.fillTableData(indicators, region1Data, region2Data)
+    $div.append(html)
 
   formatters: {
+    # PEOPLE
     population: (datum, normalized_value) ->
       if !normalized_value? || normalized_value < 0.1
         normalized_value = 0.1
@@ -59,19 +66,45 @@ class RegionInfoView
         """
     ages: (datum, normalized_value) ->
       new AgeGraphView(datum.value)
-    'population-density': () ->
-    'median-age': () ->
+
+    # FAMILIES
+    families: (datum) ->
+      "<span class=\"value\">#{h.format_integer(datum.value)}</span> <span class=\"unit\">families</span>"
+
+    'people-per-family': (datum) ->
+      "<span class=\"value\">#{h.format_float(datum.value)}</span> <span class=\"unit\">people per family</span>"
+
+    'children-at-home-per-family': (datum) ->
+      "<span class=\"value\">#{h.format_float(datum.value)}</span> <span class=\"unit\">children at home per family</span>"
+
+    'family-parents': (datum) ->
+      new FamilyParentsGraphView(datum.value)
+
+    'marital-statuses': (datum) ->
+      new MaritalStatusGraphView(datum.value)
+
+    # LANGUAGES
+    'languages-spoken-at-home': (datum) ->
+      JST['templates/cell-languages-spoken-at-home']({
+        languages_and_values: datum.value
+      })
+
+    'official-language-minority-number': (datum) ->
+      "<div><span class=\"value\">#{h.format_integer(datum.value)}</span> <span class=\"unit\">people in minority</span></div>"
+
+    'official-language-minority-percentage': (datum) ->
+      "<div><span class=\"value\">#{h.format_float(datum.value)}</span> <span class=\"unit\">%</span></div>"
   }
 
-  appendDatumToContainer: ($container, indicator, datum, normalized_value) ->
-    $container.empty()
-    output = @formatters[indicator.key](datum, normalized_value)
+  formatDatum: (key, datum, normalized_value) ->
+    output = @formatters[key](datum, normalized_value)
     if output?
       if output.appendFragmentToContainer?
-        output.appendFragmentToContainer($container)
+        $div = $('<div></div>')
+        output.appendFragmentToContainer($div)
+        $div.html()
       else
-        # output is HTML
-        $container.append(output)
+        output
 
   regionToData: (region, section) ->
     ret = {}
@@ -81,39 +114,29 @@ class RegionInfoView
 
     ret
 
-  visibleIndicators: (region1Data, region2Data) ->
-    ret = {}
-    ret[key] = indicator for key, indicator of globals.indicators.indicators when region1Data[key]? || region2Data[key]
-    ret
+  formatRegionData: (region1Data, region2Data) ->
+    out = { region1: {}, region2: {}}
 
-  refreshVisibleRows: (visibleIndicators) ->
-    $tbodies = $(@div).find('thead, tbody')
-    $tbodies.hide()
-    for key, __ of visibleIndicators
-      $tbodies.filter(".#{key}").show()
-    undefined
+    keys = _.union(_.keys(region1Data || {}), _.keys(region2Data || {}))
 
-  fillTableData: (indicators, region1Data, region2Data) ->
-    $region1Tds = $('td.region', @div)
-    $region2Tds = $('td.compare-region', @div)
-
-    for key, indicator of indicators
+    for key in keys
       datum1 = region1Data?[key]
       datum2 = region2Data?[key]
 
       normalized1 = this._normalize(datum1?.value, datum2?.value)
       normalized2 = this._normalize(datum2?.value, datum1?.value)
 
-      $td1 = $("tbody.#{key} td.region", @div)
-      $td2 = $("tbody.#{key} td.compare-region", @div)
-
-      $td1.empty()
       if datum1?.value?
-        this.appendDatumToContainer($td1, indicator, datum1, normalized1)
+        out.region1[key] = this.formatDatum(key, datum1, normalized1)
+      else
+        out.region1[key] = ''
 
-      $td2.empty()
       if datum2?.value?
-        this.appendDatumToContainer($td2, indicator, datum2, normalized2)
+        out.region2[key] = this.formatDatum(key, datum2, normalized2)
+      else
+        out.region2[key] = ''
+
+    out
 
   # Returns this value, normalized so the larger is 1.
   # Returns undefined when it wouldn't make sense (e.g., there's no second

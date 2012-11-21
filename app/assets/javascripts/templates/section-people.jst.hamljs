@@ -1,0 +1,24 @@
+:if region1.population || region2.population
+  %h3 Population
+  %table.population
+    %tr
+      %td.region1
+        != region1.population
+        != region1['text-growth']
+      %td.region2
+        != region2.population
+        != region2['text-growth']
+
+:if region1['text-fraction-male'] || region2['text-fraction-male']
+  %h3 Sexes
+  %table.sexes
+    %tr
+      %td.region1!= region1['text-fraction-male']
+      %td.region2!= region2['text-fraction-male']
+
+:if region1.ages || region2.ages
+  %h3 Ages
+  %table.ages
+    %tr
+      %td.region1!= region1.ages
+      %td.region2!= region2.ages

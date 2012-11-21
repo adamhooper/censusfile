@@ -1,4 +1,4 @@
-#= requie app
+#= require app
 #= require models/map-indicator
 #= require models/text-indicator
 
@@ -38,6 +38,70 @@ TEXT_INDICATORS = {
   ages: {
     name: 'Ages'
     value_function: (s) -> s['2011']?.a
+  }
+
+  # FAMILIES
+  families: {
+    name: 'Families'
+    value_function: (s) -> s['2011']?.f
+  }
+
+  'people-per-family': {
+    name: 'People per family'
+    value_function: (s) -> s['2011']?.pf
+  }
+
+  'children-at-home-per-family': {
+    name: 'Children at home per family'
+    value_function: (s) -> s['2011']?.cf
+  }
+
+  'family-parents': {
+    name: 'Parents'
+    value_function: (s) -> s['2011']?.fp
+  }
+
+  'marital-statuses': {
+    name: 'Status of people over age 15'
+    value_function: (s) -> s['2011']?.s
+  }
+
+  # LANGUAGES
+  'languages-spoken-at-home': {
+    name: 'Language spoken most at home'
+    value_function: (s) ->
+      strings = s['2011']?.lh?.match(/[^\d]+\d+/g)
+      if strings
+        globals = window.CensusFile.globals # avoid circular dependency by putting this here
+        languages_and_values = for substring in strings
+          m = substring.match(/([^\d]+)(\d+)/)
+          key = m[1]
+          count = parseInt(m[2], 10)
+          language = globals.languages[key]
+          [ language, count ]
+        languages_and_values.sort((a, b) -> b[1] - a[1])
+
+        # Total is first
+        total = languages_and_values.shift()[1]
+
+        # Make the rest percentages
+        lv[1] = lv[1] / total * 100 for lv in languages_and_values
+
+        console.log(languages_and_values)
+
+        # Return those
+        languages_and_values
+  }
+
+  'official-language-minority-number': {
+    name: 'Population in language minority'
+    value_function: (s) -> s['2011']?.ln
+  }
+
+  'official-language-minority-percentage': {
+    name: 'Population in language minority'
+    unit: '%'
+    value_function: (s) -> s['2011']?.lm
   }
 }
 
@@ -127,6 +191,20 @@ MAP_INDICATORS = {
       { max: 10, color: '#bdd7e7', label: '< 10% minority' },
       { max: 20, color: '#6baed6', label: '< 20% minority' },
       { color: '#2171b5', label: 'larger minority' }
+    ]
+  }
+
+  'parents:mother': {
+    name: 'Single-mother families'
+    value_function: (s) ->
+      m = s['2011']?.fp?[3]
+      t = s['2011']?.f
+      m? && t && m / t
+    buckets: [
+      { max: .05, color: '#ffffcc', label: 'fewer than 5% of all families' },
+      { max: .10, color: '#a1dab4', label: 'fewer than 10%' },
+      { max: .20, color: '#41b6c4', label: 'fewer than 20%' },
+      { color: '#225ea8', label: 'more' }
     ]
   }
 }

@@ -1,0 +1,6 @@
+%ul
+  :each item in languages_and_values.slice(0, 10)
+    %li
+      %span.language= item[0].name
+      %span.value= window.CensusFile.helpers.format_float(item[1])
+      %span.unit %

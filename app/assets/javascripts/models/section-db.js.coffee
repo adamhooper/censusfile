@@ -14,22 +14,15 @@ SECTIONS = [
   {
     key: 'families'
     name: 'Families'
-    map_indicators: [ 'people-per-family', 'children-at-home-per-family', 'parents:married', 'marital-status:married' ]
-    text_indicators: [ 'people-per-family', 'children-at-home-per-family', 'family-parents', 'marital-statuses' ]
+    map_indicators: [ 'parents:mother' ]#, 'marital-status:married', 'children-at-home-per-family' ]
+    text_indicators: [ 'families', 'people-per-family', 'children-at-home-per-family', 'family-parents', 'marital-statuses' ]
   }
 
   {
     key: 'languages'
     name: 'Languages'
-    map_indicators: [ 'language-spoken-at-home:en-v-fr', 'official-language-minority', 'mother-tongue:en-v-fr' ]
-    text_indicators: [ 'languages-spoken-at-home', 'official-language-minority', 'mother-tongues' ]
-  }
-
-  {
-    key: 'dwellings'
-    name: 'Dwellings'
-    map_indicators: [ 'dwelling-ownership:owned-v-rented', 'dwelling-type:single-detached' ]
-    text_indicators: [ 'ownerships', 'dwelling-types' ]
+    map_indicators: [ 'language:en-v-fr', 'official-language-minority' ]
+    text_indicators: [ 'languages-spoken-at-home', 'official-language-minority-number', 'official-language-minority-percentage' ]
   }
 ]
 

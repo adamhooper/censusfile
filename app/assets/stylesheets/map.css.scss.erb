@@ -226,93 +226,45 @@ body {
     left: $width_map;
     top: $height_nav;
     overflow: hidden;
+  }
+
+  .region-info-view {
+    font-size: 16px;
+
+    h3 {
+      margin: 10px;
+      font-size: 1em;
+      font-weight: bold;
+      line-height: 1;
+      border-bottom: 1px solid white;
+      border-bottom: 1px solid white;
+    }
 
     table {
       border-collapse: collapse;
       width: 2 * $width_region_info;
-    }
 
-    th {
-      font-size: .85em;
-      vertical-align: top;
-    }
+      span.bar {
+        display: inline-block;
+        height: 25px;
+        width: 0;
+      }
 
-    th.compare-region, td.compare-region {
-      background-color: $color_alt_background3;
-    }
+      &.population span.bar {
+        background: url(image_path('population-repeated.png'));
+      }
 
-    tbody span {
-      vertical-align: middle;
-    }
+      td {
+        width: $width_region_info - 20px;
+        padding: 0 10px;
+        line-height: 30px;
+        vertical-align: top;
+      }
 
-    tbody span.bar {
-      display: inline-block;
-      height: 25px;
-      width: 0;
-    }
-
-    tbody.population span.bar {
-      background: url(image_path('population-repeated.png'));
-    }
-
-    thead th.region, thead th.compare-region {
-      width: $width_region_info;
-      overflow: hidden;
-      padding: 0;
-
-      div.prompt {
-        font-size: .75em;
+      span.unit {
+        font-size: .9em;
         font-weight: normal;
-        color: $color_faded;
-        line-height: 21px;
-
-        a {
-          font-weight: normal;
-          text-decoration: none;
-        }
-
-        img {
-          display: inline-block;
-          vertical-align: middle;
-        }
       }
-    }
-
-    thead.sub th {
-      text-align: left;
-      font-size: .7em;
-      border-top: 1px solid $color_border_visible;
-      padding: 5px 9px 0;
-      line-height: 1.4;
-    }
-
-    thead.population th {
-      border-top: none;
-    }
-
-    td.region, td.compare-region {
-      width: $width_region_info - 18px;
-      padding: 0 9px 5px;
-      line-height: 31px;
-
-      div.age-chart {
-        line-height: 1.8;
-        height: 230px;
-
-        .jqplot-xaxis {
-          height: 16px;
-        }
-      }
-    }
-
-    span.unit {
-      font-size: .9em;
-      font-weight: normal;
-    }
-
-    td {
-      font-size: .7em;
-      vertical-align: top;
 
       span.value {
         font-size: 1.25em;
@@ -325,36 +277,47 @@ body {
           color: $color_red;
         }
       }
+
+      div.sex-m, div.sex-f {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 25px;
+        padding-left: 15px; // image is 10px
+        background-repeat: no-repeat;
+        margin-right: 20px;
+      }
+
+      div.sex-m {
+        background-image: url(<%= image_path('sexm-icon.png') %>);
+      }
+
+      div.sex-f {
+        background-image: url(<%= image_path('sexf-icon.png') %>);
+      }
     }
 
-    div.sex-m, div.sex-f {
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 25px;
-      padding-left: 15px; // image is 10px
-      background-repeat: no-repeat;
-      margin-right: 20px;
-    }
+    table.language-spoken-at-home {
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: .9em;
+        line-height: 1.5;
+      }
 
-    div.sex-m {
-      background-image: url(<%= image_path('sexm-icon.png') %>);
-    }
+      span.language {
+      }
 
-    div.sex-f {
-      background-image: url(<%= image_path('sexf-icon.png') %>);
-    }
-
-    tr.ages td {
-      font-size: 1em;
-
-      div.graph div {
-        font-size: .7em;
-        font-weight: normal;
+      span.value {
+        font-size: 1em;
+        padding-left: .5em;
       }
     }
   }
 
   .region-selector {
+    height: $height_legend;
+
     .wrapper {
       height: $height_legend;
       overflow: hidden;
@@ -429,7 +392,7 @@ body {
     }
   }
 
-  div.age-graph-view {
+  div.graph-view {
     $label_width: 3.5em;
 
     clear: both;
@@ -443,9 +406,9 @@ body {
     position: relative;
     vertical-align: middle;
 
-    div.age-count {
+    div.row {
       position: relative; // show up over div.ticks
-      div.age {
+      div.label {
         display: inline-block;
         width: $label_width - .5em;
         margin-left: -$label_width;
@@ -485,6 +448,21 @@ body {
         text-align: right;
         width: 5em;
       }
+    }
+  }
+
+  .family-parents div.graph-view, .marital-statuses div.graph-view {
+    $label_width: 8em;
+
+    padding-left: $label_width;
+    div.row {
+      div.label {
+        width: $label_width - .5em;
+        margin-left: -$label_width;
+      }
+    }
+    div.ticks {
+      left: $label_width;
     }
   }
 }

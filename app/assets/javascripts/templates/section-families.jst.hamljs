@@ -1,0 +1,26 @@
+:if region1.families || region2.families || region1['people-per-family'] || region2['people-per-family'] || region1['children-at-home-per-family'] || region2['children-at-home-per-family']
+  %h3 Families
+  %table.families
+    %tr.families
+      %td.region1!= region1.families
+      %td.region2!= region2.families
+    %tr.people-per-family
+      %td.region1!= region1['people-per-family']
+      %td.region2!= region2['people-per-family']
+    %tr.children-at-home-per-family
+      %td.region1!= region1['children-at-home-per-family']
+      %td.region2!= region2['children-at-home-per-family']
+
+:if region1['family-parents'] || region2['family-parents']
+  %h3 Parents
+  %table.family-parents
+    %tr
+      %td.region1!= region1['family-parents']
+      %td.region2!= region2['family-parents']
+
+:if region1['marital-statuses'] || region2['marital-statuses']
+  %h3 Statuses of people aged 15+
+  %table.marital-statuses
+    %tr
+      %td.region1!= region1['marital-statuses']
+      %td.region2!= region2['marital-statuses']

@@ -1,0 +1,17 @@
+:if region1['official-language-minority-number'] || region2['official-language-minority-number'] || region1['official-language-minority-percentage'] || region2['official-language-minority-percentage']
+  %h3 Language minority
+  %table.language-minority
+    %tr
+      %td.region1
+        != region1['official-language-minority-number']
+        != region1['official-language-minority-percentage']
+      %td.region2
+        != region2['official-language-minority-number']
+        != region2['official-language-minority-percentage']
+
+:if region1['languages-spoken-at-home'] || region2['languages-spoken-at-home']
+  %h3 Language spoken at home
+  %table.language-spoken-at-home
+    %tr
+      %td.region1!= region1['languages-spoken-at-home']
+      %td.region2!= region2['languages-spoken-at-home']
