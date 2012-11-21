@@ -65,6 +65,10 @@ class RegionSelectorFromRegionList
           region_id = $(e.currentTarget).attr('data-region-id')
           r = globals.region_store.get(region_id)
           state[setter](r)
+        $li.on 'hover', (e) ->
+          region_id = $(e.currentTarget).attr('data-region-id')
+          r = globals.region_store.get(region_id)
+          state.setHoverRegion(r)
 
         $ul.append($li)
 
