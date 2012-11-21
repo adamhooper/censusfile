@@ -199,7 +199,7 @@ MAP_INDICATORS = {
     value_function: (s) ->
       m = s['2011']?.fp?[3]
       t = s['2011']?.f
-      m? && t && m / t
+      m? && t && m / t || undefined
     buckets: [
       { max: .05, color: '#ffffcc', label: 'fewer than 5% of all families' },
       { max: .10, color: '#a1dab4', label: 'fewer than 10%' },
