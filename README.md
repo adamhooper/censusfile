@@ -1,6 +1,6 @@
-== To generate data files
+## To generate data files
 
-=== db/statistics.sqlite3
+### db/statistics.sqlite3
 
 TODO: describe how to set up the `venv` directory, using Python 3.3.
 
@@ -20,13 +20,13 @@ The code you're running lives in `statistics_renderer`, and the source data (fro
 
 See `statistics_renderer/README` to see how this all works.
 
-=== db/tiles.sqlite3
+### db/tiles.sqlite3
 
 It's a long, enormous story. I'll write it up later.
 
 See `tile_renderer/README` to see how tiles are rendered.
 
-== To launch on Amazon EC2
+## To launch on Amazon EC2
 
 You need at least 40GB of hard drive space, and it's probably faster to stay away from EBS. That means the minimum instance is m1.small. (So it isn't free.)
 
