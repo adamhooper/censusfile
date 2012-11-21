@@ -79,7 +79,7 @@ For anything other than a Dissemination Area, we will send all this:
             "ma": 32.2, /* median age */
             "d": 1234, /* density - derived */
             "dw": 1000, /* number of dwellings */
-            "mtv": [ en, fr, ot, en+fr, en+ot, fr+ot, en+fr+ot ], /* mother-tongue info for a Venn diagram */
+            "ol": [ en, fr, en+fr, ot ], /* official-language info for a Venn diagram */
             "mt": "T1230en1200fr30..." }, /* sparse array of mother tongues */
             "lh": "T1230en1200fr30..." }, /* sparse array of language spoken at home */
             "lm": 23.1, /* official language minority (percentage) */

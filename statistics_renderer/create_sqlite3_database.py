@@ -2,8 +2,8 @@
 #
 # Usage: create_sqlite3_database.py | sqlite3 out.sql
 #
-# This script runs in ~1:30 minutes, whether it's piped to sqlite3 or /dev/null.
-# (It's CPU-bound in both Python and SQLite3, so your mileage may vary greatly.)
+# This script runs in ~2 minutes, whether it's piped to sqlite3 or /dev/null.
+# (It's CPU-bound in Python.)
 
 from binascii import b2a_hex as _b2a_hex
 import json
@@ -14,6 +14,18 @@ import db
 import stats_db
 
 SLICE_SIZE = 1000
+
+def encode_official_language_array(nums):
+    return [ nums.get(key, 0) for key in ('T', 'en', 'fr', 'en+fr', '?') ]
+
+def encode_sparse_language_array(nums):
+    parts = []
+    for key, value in nums.items():
+        if value > 0:
+            parts.append(key)
+            parts.append(str(value))
+
+    return ''.join(parts)
 
 class DbRegionWithStatistics:
     Schema = {
@@ -29,6 +41,11 @@ class DbRegionWithStatistics:
             },
             'ma': ('2011', 'population', 'median-age'),
             'dw': ('2011', 'dwellings', 'total'),
+            'ol': ('2011', 'population', 'by-official-language-knowledge', encode_official_language_array),
+            'lh': ('2011', 'population', 'by-language-spoken-at-home', encode_sparse_language_array),
+            'f': ('2011', 'families', 'total'),
+            'pf': ('2011', 'families', 'people-per-family'),
+            'cf': ('2011', 'families', 'children-at-home-per-family'),
             's': [
                 ('2011', 'population-15-and-over', 'by-marital-status', 'single'),
                 ('2011', 'population-15-and-over', 'by-marital-status', 'common-law'),
@@ -37,9 +54,6 @@ class DbRegionWithStatistics:
                 ('2011', 'population-15-and-over', 'by-marital-status', 'divorced'),
                 ('2011', 'population-15-and-over', 'by-marital-status', 'widowed'),
             ],
-            'f': ('2011', 'families', 'total'),
-            'pf': ('2011', 'families', 'people-per-family'),
-            'cf': ('2011', 'families', 'children-at-home-per-family'),
             'fp': [
                 ('2011', 'families', 'by-parents', 'married'),
                 ('2011', 'families', 'by-parents', 'common-law'),
@@ -82,7 +96,9 @@ class DbRegionWithStatistics:
     def _lookup_value(self, keys):
         d = self.statistics
         for key in keys:
-            if key in d:
+            if callable(key):
+                d = key(d)
+            elif key in d:
                 d = d[key]
             else:
                 return None
