@@ -26,3 +26,27 @@
     .region-selector
     .region-info-view
     .region-links
+
+%p Zoom in.
+
+%p Way in.
+
+%p Zoom in until you discover your neighbourhood's third and fourth languages, and the number of households parented by common-law is so small you wave to a quarter of them every time you step out the door.
+
+%p This is an <a href="http://adamhooper.com">Adam Hooper</a> production. It's <a href="https://github.com/adamhooper/censusfile">on GitHub</a>. He's <a href="https://twitter.com/adamhooper">on Twitter</a>. The data comes from the <a href="http://www12.statcan.ca/census-recensement/index-eng.cfm">2011 Census</a>.
+
+- if Rails.env.production?
+  :plain
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-79453-5']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
